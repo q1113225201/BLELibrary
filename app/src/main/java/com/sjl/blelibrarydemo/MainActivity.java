@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.connect(tvCurrentMac.getText().toString(), new OnBLEConnectListener() {
+        bleManager.connect(currentMac, new OnBLEConnectListener() {
             @Override
             public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
                 //设备连接成功，找服务
@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.writeDescriptor(tvCurrentMac.getText().toString(), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLEWriteDescriptorListener() {
+        bleManager.writeDescriptor(currentMac, uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLEWriteDescriptorListener() {
             @Override
             public void onWriteDescriptorSuccess(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 toast("接受通知成功");
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
         }
         //要写入的数据
         byte[] data=new byte[0];
-        bleManager.writeData(tvCurrentMac.getText().toString(), uuidWriteService, uuidWriteCharacteristics, data, new OnBLEWriteDataListener() {
+        bleManager.writeData(currentMac, uuidWriteService, uuidWriteCharacteristics, data, new OnBLEWriteDataListener() {
             @Override
             public void onWriteDataSuccess(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 toast("写数据成功");

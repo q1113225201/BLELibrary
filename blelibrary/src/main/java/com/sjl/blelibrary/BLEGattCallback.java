@@ -58,7 +58,6 @@ public class BLEGattCallback extends BluetoothGattCallback {
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 //            super.onServicesDiscovered(gatt, status);
-//            BLELogUtil.i(TAG, "发现服务");
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLELogUtil.i(TAG, "onServicesDiscovered gatt success");
             if (onBLEConnectListener != null) {
