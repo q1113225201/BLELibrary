@@ -166,11 +166,13 @@ public class BLEManager {
         });
         BluetoothGatt bluetoothGatt = bleBluetoothGattPool.getBluetoothGatt(mac);
         if (bluetoothGatt == null) {
+            //缓存池中不存在改gatt
             bluetoothGatt = new BLEConnect().connect(application, mac, bleGattCallback);
         }
         if (bluetoothGatt == null) {
             onBLEConnectListener.onConnectFailure(null, new BLEException(BLEException.CONNECT_FAILURE));
         }
+        //添加到缓存池中
         bleBluetoothGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
     }
 

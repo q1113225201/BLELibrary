@@ -22,6 +22,7 @@ import com.sjl.blelibrary.listener.OnBLEReceiveDataListener;
 import com.sjl.blelibrary.listener.OnBLEWriteDataListener;
 import com.sjl.blelibrary.listener.OnBLEWriteDescriptorListener;
 import com.sjl.blelibrary.util.BLEByteUtil;
+import com.sjl.blelibrary.util.BLELogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +34,15 @@ import java.util.List;
  * @date 2017/5/8
  */
 public class MainActivity extends Activity {
+    private static final String TAG = "MainActivity";
     private static final int REQUEST_LOCATION_CODE = 100;
-    //替换成自己的uuid
+    //使用需要的uuid
     private String uuidDescriptorService;
     private String uuidDescriptorCharacteristic;
     private String uuidDescriptor;
     private String uuidWriteService;
     private String uuidWriteCharacteristics;
-    //替换成要写入的数据
-    private byte[] data = new byte[0];
+
     private TextView tvCurrentMac;
     private ListView lv;
 
@@ -49,6 +50,7 @@ public class MainActivity extends Activity {
     private List<String> macList = new ArrayList<>();
     private ArrayAdapter adapter;
 
+    private String currentMac;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +67,8 @@ public class MainActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tvCurrentMac.setText(macList.get(position));
+                currentMac = macList.get(position);
+                tvCurrentMac.setText(currentMac);
             }
         });
         bleManager = BLEManager.getInstance(getApplication());
@@ -105,14 +108,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                synchronized (MainActivity.this) {
-                    int i = 0;
-                    for (i = 0; i < macList.size(); i++) {
-                        if (macList.get(i).equalsIgnoreCase(device.getAddress())) {
-                            break;
-                        }
-                    }
-                    if (i >= macList.size()) {
+                synchronized (MainActivity.this){
+                    if(!macList.contains(device.getAddress())){
                         macList.add(device.getAddress());
                         adapter.notifyDataSetChanged();
                     }
@@ -135,7 +132,7 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.connect(tvCurrentMac.getText().toString(), new OnBLEConnectListener() {
+        bleManager.connect(currentMac, new OnBLEConnectListener() {
             @Override
             public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
                 //设备连接成功，找服务
@@ -166,7 +163,7 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.writeDescriptor(tvCurrentMac.getText().toString(), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLEWriteDescriptorListener() {
+        bleManager.writeDescriptor(currentMac, uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLEWriteDescriptorListener() {
             @Override
             public void onWriteDescriptorSuccess(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 toast("接受通知成功");
@@ -188,7 +185,9 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.writeData(tvCurrentMac.getText().toString(), uuidWriteService, uuidWriteCharacteristics, data, new OnBLEWriteDataListener() {
+        //要写入的数据
+        byte[] data=new byte[0];
+        bleManager.writeData(currentMac, uuidWriteService, uuidWriteCharacteristics, data, new OnBLEWriteDataListener() {
             @Override
             public void onWriteDataSuccess(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 toast("写数据成功");
@@ -216,6 +215,7 @@ public class MainActivity extends Activity {
 
     public void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        BLELogUtil.i(TAG,msg);
     }
 
     @Override
