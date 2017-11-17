@@ -14,7 +14,7 @@ import com.sjl.blelibrary.BLEException;
 public interface OnBLEConnectListener {
     void onConnectSuccess(BluetoothGatt gatt, int status, int newState);
 
-    void onConnectFailure(BluetoothGatt gatt,BLEException bleException);
+    void onConnectFailure(BluetoothGatt gatt, BLEException bleException);
 
     void onServicesDiscovered(BluetoothGatt gatt, int status);
 }

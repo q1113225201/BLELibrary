@@ -35,10 +35,8 @@ public class BLEBluetoothGattPool {
             }
             for (String macItem : macList) {
                 if (System.currentTimeMillis() - gattMap.get(macItem).time > time) {
-                    BLELogUtil.e(TAG, macItem + " timeout");
                     if (terminalDelete) {
-                        //有时可能遇到设备已经断开连接但Android仍然连接的情况，
-                        //可以定期清理缓存池内一定时间没操作的设备
+                        BLELogUtil.e(TAG, macItem + " timeout");
                         disconnectGatt(macItem);
                     }
                 }

@@ -29,10 +29,15 @@ public class BLEWriteDescriptor {
             BLELogUtil.e(TAG, "writeDescriptor getService failure");
             return false;
         }
+
         //获取特性
         BluetoothGattCharacteristic bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(UUID.fromString(uuidDescriptorCharacteristic));
         if (bluetoothGattCharacteristic == null) {
             BLELogUtil.e(TAG, "writeDescriptor getCharacteristic failure");
+            return false;
+        }
+        if (!gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)) {
+            BLELogUtil.e(TAG, "writeDescriptor setCharacteristicNotification failure");
             return false;
         }
         //设置蓝牙返回数据提醒
@@ -41,11 +46,13 @@ public class BLEWriteDescriptor {
             BLELogUtil.e(TAG, "writeDescriptor bluetoothGattDescriptor == null");
             return false;
         }
-        bluetoothGattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-
-        if (!gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)) {
-            BLELogUtil.e(TAG, "writeDescriptor setCharacteristicNotification failure");
-            return false;
+        //根据特征属性设置
+        if((bluetoothGattCharacteristic.getProperties()&BluetoothGattCharacteristic.PROPERTY_NOTIFY)==0) {
+            //显示特征
+            bluetoothGattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+        }else{
+            //显示通知
+            bluetoothGattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         }
 
         if (!gatt.writeDescriptor(bluetoothGattDescriptor)) {

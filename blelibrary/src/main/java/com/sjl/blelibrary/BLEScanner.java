@@ -60,14 +60,12 @@ public class BLEScanner extends ScanCallback {
         init();
         bluetoothLeScanner.startScan(this);
         isScanning = true;
-        if (timeout > 0) {
-            timeoutHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scanTimeOut();
-                }
-            }, timeout);
-        }
+        timeoutHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scanTimeOut();
+            }
+        }, timeout);
     }
 
     /**
@@ -104,13 +102,5 @@ public class BLEScanner extends ScanCallback {
 
     public void setOnBLEScanListener(OnBLEScanListener onBLEScanListener) {
         this.onBLEScanListener = onBLEScanListener;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
     }
 }
