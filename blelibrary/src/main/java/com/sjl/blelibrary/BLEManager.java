@@ -105,10 +105,22 @@ public class BLEManager {
      * @param onBLEScanListener
      */
     public void startScan(BLEScanner.OnBLEScanListener onBLEScanListener) {
+        //默认设置5秒
+        startScan(5000, onBLEScanListener);
+    }
+
+    /**
+     * 扫描设备
+     *
+     * @param timeout           扫描时长
+     * @param onBLEScanListener
+     */
+    public void startScan(int timeout, BLEScanner.OnBLEScanListener onBLEScanListener) {
         if (bleScanner == null) {
-            bleScanner = new BLEScanner(onBLEScanListener);
+            bleScanner = new BLEScanner(timeout, onBLEScanListener);
         }
         bleScanner.setOnBLEScanListener(onBLEScanListener);
+        bleScanner.setTimeout(timeout);
         bleScanner.startScan();
     }
 
@@ -190,13 +202,14 @@ public class BLEManager {
     /**
      * 写数据
      *
+     * @param mac
      * @param uuidWriteService
      * @param uuidWriteCharacteristics
      * @param data
      * @param onBLEWriteDataListener
      * @param onBLEReceiveDataListener
      */
-    public void writeData(String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLEWriteDataListener onBLEWriteDataListener, OnBLEReceiveDataListener onBLEReceiveDataListener) {
+    public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLEWriteDataListener onBLEWriteDataListener, OnBLEReceiveDataListener onBLEReceiveDataListener) {
         BLEGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
         bleGattCallback.setOnBLEWriteDescriptorListener(null);
         bleGattCallback.setOnBLEWriteDataListener(onBLEWriteDataListener);
