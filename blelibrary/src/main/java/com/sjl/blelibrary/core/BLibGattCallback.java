@@ -1,4 +1,4 @@
-package com.sjl.blelibrary;
+package com.sjl.blelibrary.core;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -6,11 +6,12 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
 
-import com.sjl.blelibrary.listener.OnBLEConnectListener;
-import com.sjl.blelibrary.listener.OnBLEReceiveDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDescriptorListener;
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.listener.OnBLibConnectListener;
+import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * BLEGattCallback
@@ -19,13 +20,13 @@ import com.sjl.blelibrary.util.BLELogUtil;
  * @date 2017/2/8
  */
 
-public class BLEGattCallback extends BluetoothGattCallback {
-    private static final String TAG = "BLEGattCallback";
+public class BLibGattCallback extends BluetoothGattCallback {
+    private static final String TAG = "BLibGattCallback";
 
-    private OnBLEConnectListener onBLEConnectListener;
-    private OnBLEWriteDescriptorListener onBLEWriteDescriptorListener;
-    private OnBLEWriteDataListener onBLEWriteDataListener;
-    private OnBLEReceiveDataListener onBLEReceiveDataListener;
+    private OnBLibConnectListener onBLEConnectListener;
+    private OnBLibWriteDescriptorListener onBLEWriteDescriptorListener;
+    private OnBLibWriteDataListener onBLEWriteDataListener;
+    private OnBLibReceiveDataListener onBLEReceiveDataListener;
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -34,23 +35,23 @@ public class BLEGattCallback extends BluetoothGattCallback {
         if (status == BluetoothGatt.GATT_SUCCESS) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 //连接gatt server
-                BLELogUtil.i(TAG, "onConnectionStateChange state connect");
+                BLibLogUtil.d(TAG, "onConnectionStateChange state connect");
                 if (onBLEConnectListener != null) {
                     onBLEConnectListener.onConnectSuccess(gatt, status, newState);
                 }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 //断开连接gatt server
-                BLELogUtil.e(TAG, "onConnectionStateChange state disconnected");
+                BLibLogUtil.e(TAG, "onConnectionStateChange state disconnected");
                 if (onBLEConnectListener != null) {
-                    onBLEConnectListener.onConnectFailure(gatt, new BLEException(BLEException.DISCONNECT));
+                    onBLEConnectListener.onConnectFailure(gatt, BLibCode.ER_DISCONNECT);
                 }
             } else {
-                BLELogUtil.e(TAG, "onConnectionStateChange status=" + status + ",newState=" + newState);
+                BLibLogUtil.e(TAG, "onConnectionStateChange status=" + status + ",newState=" + newState);
             }
         } else {
-            BLELogUtil.e(TAG, "onConnectionStateChange status=" + status);
+            BLibLogUtil.e(TAG, "onConnectionStateChange status=" + status);
             if (onBLEConnectListener != null) {
-                onBLEConnectListener.onConnectFailure(gatt, new BLEException(BLEException.CONNECT_STATE_CHANGE));
+                onBLEConnectListener.onConnectFailure(gatt, BLibCode.matchCode(status));
             }
         }
     }
@@ -59,27 +60,27 @@ public class BLEGattCallback extends BluetoothGattCallback {
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 //            super.onServicesDiscovered(gatt, status);
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLELogUtil.i(TAG, "onServicesDiscovered gatt success");
+            BLibLogUtil.d(TAG, "onServicesDiscovered gatt success");
             if (onBLEConnectListener != null) {
                 onBLEConnectListener.onServicesDiscovered(gatt, status);
             }
         } else {
-            BLELogUtil.e(TAG, "onServicesDiscovered status=" + status);
+            BLibLogUtil.e(TAG, "onServicesDiscovered status=" + status);
         }
     }
 
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-//            super.onCharacteristicWrite(gatt, characteristic, status);
+        //super.onCharacteristicWrite(gatt, characteristic, status);
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLELogUtil.i(TAG, "onCharacteristicWrite gatt success");
+            BLibLogUtil.d(TAG, "onCharacteristicWrite gatt success");
             if (onBLEWriteDataListener != null) {
                 onBLEWriteDataListener.onWriteDataSuccess(gatt, characteristic, status);
             }
         } else {
-            BLELogUtil.e(TAG, "onCharacteristicWrite status=" + status + ",characteristic uuid=" + characteristic.getUuid().toString());
+            BLibLogUtil.e(TAG, "onCharacteristicWrite status=" + status + ",characteristic uuid=" + characteristic.getUuid().toString());
             if (onBLEWriteDataListener != null) {
-                onBLEWriteDataListener.onWriteDataFailure(new BLEException(BLEException.WRITE_DATA_FAILURE));
+                onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_CALLBACK);
             }
         }
     }
@@ -87,13 +88,13 @@ public class BLEGattCallback extends BluetoothGattCallback {
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 //            super.onCharacteristicRead(gatt, characteristic, status);
-        BLELogUtil.i(TAG, "onCharacteristicRead");
+        BLibLogUtil.d(TAG, "onCharacteristicRead");
     }
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 //            super.onCharacteristicChanged(gatt, characteristic);
-        BLELogUtil.i(TAG, "onCharacteristicChanged receiverData");
+        BLibLogUtil.d(TAG, "onCharacteristicChanged receiverData");
 
         if (onBLEReceiveDataListener != null) {
             onBLEReceiveDataListener.onReceiveData(characteristic.getValue());
@@ -104,31 +105,31 @@ public class BLEGattCallback extends BluetoothGattCallback {
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
 //            super.onDescriptorWrite(gatt, descriptor, status);
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLELogUtil.i(TAG, "onDescriptorWrite gatt success");
+            BLibLogUtil.d(TAG, "onDescriptorWrite gatt success");
             if (onBLEWriteDescriptorListener != null) {
                 onBLEWriteDescriptorListener.onWriteDescriptorSuccess(gatt, descriptor, status);
             }
         } else {
-            BLELogUtil.e(TAG, "onDescriptorWrite status=" + status);
+            BLibLogUtil.e(TAG, "onDescriptorWrite status=" + status);
             if (onBLEWriteDescriptorListener != null) {
-                onBLEWriteDescriptorListener.onWriteDescriptorFailure(new BLEException(BLEException.WRITE_DESCRIPTOR_FAILURE));
+                onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITEDESC_CALLBACK);
             }
         }
     }
 
-    public void setOnBLEConnectListener(OnBLEConnectListener onBLEConnectListener) {
+    public void setOnBLEConnectListener(OnBLibConnectListener onBLEConnectListener) {
         this.onBLEConnectListener = onBLEConnectListener;
     }
 
-    public void setOnBLEWriteDescriptorListener(OnBLEWriteDescriptorListener onBLEWriteDescriptorListener) {
+    public void setOnBLEWriteDescriptorListener(OnBLibWriteDescriptorListener onBLEWriteDescriptorListener) {
         this.onBLEWriteDescriptorListener = onBLEWriteDescriptorListener;
     }
 
-    public void setOnBLEWriteDataListener(OnBLEWriteDataListener onBLEWriteDataListener) {
+    public void setOnBLEWriteDataListener(OnBLibWriteDataListener onBLEWriteDataListener) {
         this.onBLEWriteDataListener = onBLEWriteDataListener;
     }
 
-    public void setOnBLEReceiveDataListener(OnBLEReceiveDataListener onBLEReceiveDataListener) {
+    public void setOnBLEReceiveDataListener(OnBLibReceiveDataListener onBLEReceiveDataListener) {
         this.onBLEReceiveDataListener = onBLEReceiveDataListener;
     }
 }

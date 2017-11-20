@@ -27,9 +27,9 @@ import java.util.zip.ZipOutputStream;
  * <p>主要封装了一些对文件读写的操作
  *
  */
-public class BLEFileUtil {
+public class BLibFileUtil {
     
-    private BLEFileUtil() {
+    private BLibFileUtil() {
         throw new Error("￣﹏￣");
     }
 
@@ -218,8 +218,8 @@ public class BLEFileUtil {
             buffer.clear();
             return true;
         } finally {
-            BLEIOUtil.close(channel);
-            BLEIOUtil.close(outputStream);
+            BLibIOUtil.close(channel);
+            BLibIOUtil.close(outputStream);
         }
     }
 
@@ -347,8 +347,8 @@ public class BLEFileUtil {
                         .transferTo(position, maxCount, outChannel);  
             }
         } finally {
-            BLEIOUtil.close(inChannel);
-            BLEIOUtil.close(outChannel);
+            BLibIOUtil.close(inChannel);
+            BLibIOUtil.close(outChannel);
         }  
     } 
 
@@ -709,9 +709,9 @@ public class BLEFileUtil {
             zipOut.flush();
             return true;
         } finally {
-            BLEIOUtil.close(zipOut);
-            BLEIOUtil.close(outputStream);
-            BLEIOUtil.close(fis);
+            BLibIOUtil.close(zipOut);
+            BLibIOUtil.close(outputStream);
+            BLibIOUtil.close(fis);
         }
     }
     public static boolean copyAssetsFile(Context context, String sourceFile, String destFile) throws IOException {
@@ -731,8 +731,8 @@ public class BLEFileUtil {
             if(outputStream!=null) {
                 outputStream.flush();
             }
-            BLEIOUtil.close(inputStream);
-            BLEIOUtil.close(outputStream);
+            BLibIOUtil.close(inputStream);
+            BLibIOUtil.close(outputStream);
         }
     }
 }

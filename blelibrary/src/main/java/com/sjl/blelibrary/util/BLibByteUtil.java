@@ -9,7 +9,7 @@ import java.util.Locale;
  * @date 2017/4/21
  */
 
-public class BLEByteUtil {
+public class BLibByteUtil {
 
     //以十六进制字符输出字节数组到日志,每两位字符进行分隔
     public static String bytesToHexString(byte[] src) {

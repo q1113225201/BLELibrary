@@ -7,6 +7,6 @@ package com.sjl.blelibrary.listener;
  * @date 2017/5/3
  */
 
-public interface OnBLEReceiveDataListener {
+public interface OnBLibReceiveDataListener {
     void onReceiveData(byte[] data);
 }

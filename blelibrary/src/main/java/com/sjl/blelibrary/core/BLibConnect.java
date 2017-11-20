@@ -1,4 +1,4 @@
-package com.sjl.blelibrary;
+package com.sjl.blelibrary.core;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.content.Context;
 
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * BLEConnect
@@ -15,21 +15,21 @@ import com.sjl.blelibrary.util.BLELogUtil;
  * @date 2017/5/3
  */
 
-public class BLEConnect {
-    private static final String TAG = "BLEConnect";
+public class BLibConnect {
+    private static final String TAG = "BLibConnect";
 
-    public BLEConnect() {
+    public BLibConnect() {
     }
 
     public BluetoothGatt connect(Context context,String mac,BluetoothGattCallback gattCallback){
         BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
         if (bluetoothDevice == null) {
-            BLELogUtil.e(TAG, "connect getRemoteDevice failure");
+            BLibLogUtil.e(TAG, "connect getRemoteDevice failure");
             return null;
         }
         BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallback);
         if (bluetoothGatt == null) {
-            BLELogUtil.e(TAG, "connect connectGatt failure");
+            BLibLogUtil.e(TAG, "connect connectGatt failure");
             return null;
         }
         return bluetoothGatt;

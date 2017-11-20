@@ -1,9 +1,9 @@
-package com.sjl.blelibrary;
+package com.sjl.blelibrary.core;
 
 import android.bluetooth.BluetoothGatt;
 import android.os.Handler;
 
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @date 2017/5/4
  */
 
-public class BLEBluetoothGattPool {
+public class BLibGattPool {
     private static final String TAG = "BLEBluetoothGattPool";
     private Map<String, BluetoothGattItem> gattMap = new HashMap<>();
     private boolean terminalDelete = false;
@@ -36,7 +36,7 @@ public class BLEBluetoothGattPool {
             for (String macItem : macList) {
                 if (System.currentTimeMillis() - gattMap.get(macItem).time > time) {
                     if (terminalDelete) {
-                        BLELogUtil.e(TAG, macItem + " timeout");
+                        BLibLogUtil.e(TAG, macItem + " timeout");
                         disconnectGatt(macItem);
                     }
                 }
@@ -56,7 +56,7 @@ public class BLEBluetoothGattPool {
         }
     };
 
-    public BLEBluetoothGattPool() {
+    public BLibGattPool() {
         initPool();
     }
 
@@ -85,7 +85,7 @@ public class BLEBluetoothGattPool {
      * @param mac
      * @return
      */
-    public synchronized BLEGattCallback getBluetoothGattCallback(String mac) {
+    public synchronized BLibGattCallback getBluetoothGattCallback(String mac) {
         if (isConnect(mac)) {
             setBluetoothGatt(mac, gattMap.get(mac).bluetoothGatt, gattMap.get(mac).bleGattCallback);
             return gattMap.get(mac).bleGattCallback;
@@ -99,8 +99,15 @@ public class BLEBluetoothGattPool {
      * @param mac
      * @param bluetoothGatt
      */
-    public synchronized void setBluetoothGatt(String mac, BluetoothGatt bluetoothGatt, BLEGattCallback bleGattCallback) {
-        gattMap.put(mac, new BluetoothGattItem(bluetoothGatt, bleGattCallback, System.currentTimeMillis()));
+    public synchronized void setBluetoothGatt(String mac, BluetoothGatt bluetoothGatt, BLibGattCallback bleGattCallback) {
+        BluetoothGattItem bluetoothGattItem = gattMap.get(mac);
+        if(bluetoothGattItem==null){
+            bluetoothGattItem = new BluetoothGattItem();
+        }
+        bluetoothGattItem.time = System.currentTimeMillis();
+        bluetoothGattItem.bluetoothGatt = bluetoothGatt;
+        bluetoothGattItem.bleGattCallback = bleGattCallback;
+        gattMap.put(mac, bluetoothGattItem);
     }
 
     /**
@@ -133,7 +140,7 @@ public class BLEBluetoothGattPool {
      * @param mac
      */
     public synchronized void disconnectGatt(String mac) {
-        BLELogUtil.e(TAG, "disconnectGatt:" + mac);
+        BLibLogUtil.e(TAG, "disconnectGatt:" + mac);
         BluetoothGatt bluetoothGatt = getBluetoothGatt(mac);
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();
@@ -170,13 +177,7 @@ public class BLEBluetoothGattPool {
     //每个连接的Gatt
     class BluetoothGattItem {
         BluetoothGatt bluetoothGatt;
-        BLEGattCallback bleGattCallback;
+        BLibGattCallback bleGattCallback;
         long time;
-
-        public BluetoothGattItem(BluetoothGatt bluetoothGatt, BLEGattCallback bleGattCallback, long time) {
-            this.bluetoothGatt = bluetoothGatt;
-            this.bleGattCallback = bleGattCallback;
-            this.time = time;
-        }
     }
 }

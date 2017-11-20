@@ -1,4 +1,4 @@
-package com.sjl.blelibrary;
+package com.sjl.blelibrary.core;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -9,7 +9,8 @@ import android.bluetooth.le.ScanResult;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * BLEScanner
@@ -18,7 +19,7 @@ import com.sjl.blelibrary.util.BLELogUtil;
  * @date 2017/5/3
  */
 @SuppressLint("NewApi")
-public class BLEScanner extends ScanCallback {
+public class BLibScanner extends ScanCallback {
     private static final String TAG = "BLEScanner";
 
     private static BluetoothLeScanner bluetoothLeScanner;
@@ -33,15 +34,15 @@ public class BLEScanner extends ScanCallback {
     public interface OnBLEScanListener {
         void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord);
 
-        void onScanFailed(BLEException bleException);
+        void onScanFailed(int code);
     }
 
-    public BLEScanner(OnBLEScanListener onBLEScanListener) {
+    public BLibScanner(OnBLEScanListener onBLEScanListener) {
         this.onBLEScanListener = onBLEScanListener;
         init();
     }
 
-    public BLEScanner(int timeout, OnBLEScanListener onBLEScanListener) {
+    public BLibScanner(int timeout, OnBLEScanListener onBLEScanListener) {
         this.timeout = timeout;
         this.onBLEScanListener = onBLEScanListener;
         init();
@@ -75,9 +76,9 @@ public class BLEScanner extends ScanCallback {
      */
     private void scanTimeOut() {
         if (isScanning) {
-            BLELogUtil.e(TAG, "scanTimeOut");
+            BLibLogUtil.e(TAG, "scanTimeOut");
             stopScan();
-            onBLEScanListener.onScanFailed(new BLEException(BLEException.SCAN_TIMEOUT));
+            onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_GOUND);
         }
     }
 
@@ -94,7 +95,7 @@ public class BLEScanner extends ScanCallback {
     public void onScanResult(int callbackType, ScanResult result) {
         super.onScanResult(callbackType, result);
 
-        BLELogUtil.e(TAG, "ScanResult:" + result);
+        BLibLogUtil.e(TAG, "ScanResult:" + result);
         onBLEScanListener.onScanResult(result.getDevice(), result.getRssi(), result.getScanRecord().getBytes());
     }
 

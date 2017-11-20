@@ -14,15 +14,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sjl.blelibrary.BLEException;
-import com.sjl.blelibrary.BLEManager;
-import com.sjl.blelibrary.BLEScanner;
-import com.sjl.blelibrary.listener.OnBLEConnectListener;
-import com.sjl.blelibrary.listener.OnBLEReceiveDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDescriptorListener;
-import com.sjl.blelibrary.util.BLEByteUtil;
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.core.BLibManager;
+import com.sjl.blelibrary.core.BLibScanner;
+import com.sjl.blelibrary.listener.OnBLibConnectListener;
+import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
+import com.sjl.blelibrary.util.BLibByteUtil;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private TextView tvCurrentMac;
     private ListView lv;
 
-    private BLEManager bleManager;
+    private BLibManager bleManager;
     private List<String> macList = new ArrayList<>();
     private ArrayAdapter adapter;
 
@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
                 tvCurrentMac.setText(currentMac);
             }
         });
-        bleManager = BLEManager.getInstance(getApplication());
+        bleManager = BLibManager.getInstance();
         PermisstionUtil.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE, "5.0之后使用蓝牙需要位置权限", new PermisstionUtil.OnPermissionResult() {
             @Override
             public void granted(int requestCode) {
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         if (bleManager.isSupportBluetooth()) {
             if (bleManager.isSupportBLE()) {
                 if (!bleManager.isBluetoothEnable()) {
-                    bleManager.enableBluetooth(this);
+                    bleManager.enableBluetooth();
                 }
             } else {
                 toast("不支持低功耗蓝牙");
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
      * @param view
      */
     public void scan(View view) {
-        bleManager.startScan(10000, new BLEScanner.OnBLEScanListener() {
+        bleManager.startScan(10000, new BLibScanner.OnBLEScanListener() {
 
             @Override
             public void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -117,8 +117,8 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onScanFailed(BLEException bleException) {
-                toast(bleException.getMessage());
+            public void onScanFailed(int code) {
+                toast(BLibCode.getError(code));
             }
         });
     }
@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.connect(currentMac, new OnBLEConnectListener() {
+        bleManager.connect(currentMac, new OnBLibConnectListener() {
             @Override
             public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
                 //设备连接成功，找服务
@@ -141,9 +141,9 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onConnectFailure(BluetoothGatt gatt, BLEException bleException) {
+            public void onConnectFailure(BluetoothGatt gatt, int code) {
                 //设备连接失败
-                toast(bleException.getMessage());
+                toast(BLibCode.getError(code));
             }
 
             @Override
@@ -163,15 +163,15 @@ public class MainActivity extends Activity {
         if (!checkCurrentMac()) {
             return;
         }
-        bleManager.writeDescriptor(currentMac, uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLEWriteDescriptorListener() {
+        bleManager.writeDescriptor(currentMac, uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor, new OnBLibWriteDescriptorListener() {
             @Override
             public void onWriteDescriptorSuccess(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
                 toast("接受通知成功");
             }
 
             @Override
-            public void onWriteDescriptorFailure(BLEException bleException) {
-                toast(bleException.getMessage());
+            public void onWriteDescriptorFailure(int code) {
+                toast(BLibCode.getError(code));
             }
         });
     }
@@ -187,20 +187,20 @@ public class MainActivity extends Activity {
         }
         //要写入的数据
         byte[] data=new byte[0];
-        bleManager.writeData(currentMac, uuidWriteService, uuidWriteCharacteristics, data, new OnBLEWriteDataListener() {
+        bleManager.writeData(currentMac, uuidWriteService, uuidWriteCharacteristics, data, new OnBLibWriteDataListener() {
             @Override
             public void onWriteDataSuccess(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 toast("写数据成功");
             }
 
             @Override
-            public void onWriteDataFailure(BLEException exception) {
-                toast(exception.getMessage());
+            public void onWriteDataFailure(int code) {
+                toast(BLibCode.getError(code));
             }
-        }, new OnBLEReceiveDataListener() {
+        }, new OnBLibReceiveDataListener() {
             @Override
             public void onReceiveData(byte[] data) {
-                toast("接受到数据：" + BLEByteUtil.bytesToHexString(data));
+                toast("接受到数据：" + BLibByteUtil.bytesToHexString(data));
             }
         });
     }
@@ -215,7 +215,7 @@ public class MainActivity extends Activity {
 
     public void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        BLELogUtil.i(TAG,msg);
+        BLibLogUtil.i(TAG,msg);
     }
 
     @Override

@@ -13,9 +13,9 @@ import java.nio.channels.Channel;
  * IO工具类
  *
  */
-public class BLEIOUtil {
+public class BLibIOUtil {
 
-    private BLEIOUtil() {
+    private BLibIOUtil() {
         
     }
 

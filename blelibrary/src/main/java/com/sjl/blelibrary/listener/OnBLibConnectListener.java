@@ -2,8 +2,6 @@ package com.sjl.blelibrary.listener;
 
 import android.bluetooth.BluetoothGatt;
 
-import com.sjl.blelibrary.BLEException;
-
 /**
  * OnBLEConnectListener
  *
@@ -11,10 +9,10 @@ import com.sjl.blelibrary.BLEException;
  * @date 2017/5/3
  */
 
-public interface OnBLEConnectListener {
+public interface OnBLibConnectListener {
     void onConnectSuccess(BluetoothGatt gatt, int status, int newState);
 
-    void onConnectFailure(BluetoothGatt gatt, BLEException bleException);
+    void onConnectFailure(BluetoothGatt gatt, int code);
 
     void onServicesDiscovered(BluetoothGatt gatt, int status);
 }

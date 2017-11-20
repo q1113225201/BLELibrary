@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BLELibraryDemo.iml" filepath="$PROJECT_DIR$/BLELibraryDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/BLELibrary.iml" filepath="$PROJECT_DIR$/.idea/BLELibrary.iml" />
+      <module fileurl="file://E:\cache\AndroidStudio\Demo\BLELibrary\BLELibrary\BLELibraryDemo.iml" filepath="E:\cache\AndroidStudio\Demo\BLELibrary\BLELibrary\BLELibraryDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/blelibrary/blelibrary.iml" filepath="$PROJECT_DIR$/blelibrary/blelibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
     </modules>
   </component>
 </project>

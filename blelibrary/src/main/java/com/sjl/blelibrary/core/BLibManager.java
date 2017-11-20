@@ -1,17 +1,18 @@
-package com.sjl.blelibrary;
+package com.sjl.blelibrary.core;
 
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import com.sjl.blelibrary.listener.OnBLEConnectListener;
-import com.sjl.blelibrary.listener.OnBLEReceiveDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDataListener;
-import com.sjl.blelibrary.listener.OnBLEWriteDescriptorListener;
-import com.sjl.blelibrary.util.BLELogUtil;
+import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.base.BLibInit;
+import com.sjl.blelibrary.listener.OnBLibConnectListener;
+import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
+import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * XiaoDiManager
@@ -20,31 +21,34 @@ import com.sjl.blelibrary.util.BLELogUtil;
  * @date 2017/5/3
  */
 
-public class BLEManager {
+public class BLibManager {
     private static final String TAG = "XiaoDiManager";
     private Application application;
     private String mac;
-    private BLEBluetoothGattPool bleBluetoothGattPool;
-    private static BLEManager bleManager;
+    private BLibGattPool bleBluetoothGattPool;
+    private static BLibManager bleManager;
 
-    public static BLEManager getInstance(Application application) {
+    public static BLibManager getInstance() {
         if (bleManager == null) {
             synchronized (TAG) {
                 if (bleManager == null) {
-                    bleManager = new BLEManager(application);
+                    bleManager = new BLibManager();
                 }
             }
         }
         return bleManager;
     }
 
-    private BLEManager(Application application) {
-        this.application = application;
+    private BLibManager() {
+        this.application = BLibInit.application;
+        if(this.application==null){
+            throw new NullPointerException();
+        }
         initPool();
     }
 
     private void initPool() {
-        bleBluetoothGattPool = new BLEBluetoothGattPool();
+        bleBluetoothGattPool = new BLibGattPool();
     }
 
     /**
@@ -80,10 +84,10 @@ public class BLEManager {
     /**
      * 开启蓝牙
      */
-    public void enableBluetooth(Context context) {
+    public void enableBluetooth() {
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        BLibInit.application.startActivity(intent);
     }
 
     /**
@@ -97,14 +101,14 @@ public class BLEManager {
         return bleBluetoothGattPool.isConnect(mac);
     }
 
-    private BLEScanner bleScanner;
+    private BLibScanner bleScanner;
 
     /**
      * 扫描设备
      *
      * @param onBLEScanListener
      */
-    public void startScan(BLEScanner.OnBLEScanListener onBLEScanListener) {
+    public void startScan(BLibScanner.OnBLEScanListener onBLEScanListener) {
         //默认设置5秒
         startScan(5000, onBLEScanListener);
     }
@@ -115,9 +119,9 @@ public class BLEManager {
      * @param timeout           扫描时长
      * @param onBLEScanListener
      */
-    public void startScan(int timeout, BLEScanner.OnBLEScanListener onBLEScanListener) {
+    public void startScan(int timeout, BLibScanner.OnBLEScanListener onBLEScanListener) {
         if (bleScanner == null) {
-            bleScanner = new BLEScanner(timeout, onBLEScanListener);
+            bleScanner = new BLibScanner(timeout, onBLEScanListener);
         }
         bleScanner.setOnBLEScanListener(onBLEScanListener);
         bleScanner.setTimeout(timeout);
@@ -139,22 +143,22 @@ public class BLEManager {
      * @param mac
      * @param onBLEConnectListener
      */
-    public void connect(final String mac, final OnBLEConnectListener onBLEConnectListener) {
-        BLEGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+    public void connect(final String mac, final OnBLibConnectListener onBLEConnectListener) {
+        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
         if (bleGattCallback == null) {
-            bleGattCallback = new BLEGattCallback();
+            bleGattCallback = new BLibGattCallback();
         }
-        bleGattCallback.setOnBLEConnectListener(new OnBLEConnectListener() {
+        bleGattCallback.setOnBLEConnectListener(new OnBLibConnectListener() {
             @Override
             public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
                 onBLEConnectListener.onConnectSuccess(gatt, status, newState);
             }
 
             @Override
-            public void onConnectFailure(BluetoothGatt gatt, BLEException bleException) {
+            public void onConnectFailure(BluetoothGatt gatt,int code) {
                 if (gatt != null && gatt.getDevice().getAddress().toUpperCase().equals(mac.toUpperCase())) {
-                    BLELogUtil.e(TAG, "onConnectFailure");
-                    onBLEConnectListener.onConnectFailure(gatt, bleException);
+                    BLibLogUtil.e(TAG, "onConnectFailure");
+                    onBLEConnectListener.onConnectFailure(gatt, code);
                 }
 //                disconnectGatt(mac);
             }
@@ -167,10 +171,10 @@ public class BLEManager {
         setMac(mac);
         BluetoothGatt bluetoothGatt = bleBluetoothGattPool.getBluetoothGatt(mac);
         if (bluetoothGatt == null) {
-            bluetoothGatt = new BLEConnect().connect(application, mac, bleGattCallback);
+            bluetoothGatt = new BLibConnect().connect(application, mac, bleGattCallback);
         }
         if (bluetoothGatt == null) {
-            onBLEConnectListener.onConnectFailure(null, new BLEException(BLEException.CONNECT_FAILURE));
+            onBLEConnectListener.onConnectFailure(null, BLibCode.ER_CONNECTED);
         }
         bleBluetoothGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
     }
@@ -184,20 +188,21 @@ public class BLEManager {
      * @param uuidDescriptor
      * @param onBLEWriteDescriptorListener
      */
-    public void writeDescriptor(String mac, String uuidDescriptorService, String uuidDescriptorCharacteristic, String uuidDescriptor, OnBLEWriteDescriptorListener onBLEWriteDescriptorListener) {
-        BLEGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+    public void writeDescriptor(String mac, String uuidDescriptorService, String uuidDescriptorCharacteristic, String uuidDescriptor, OnBLibWriteDescriptorListener onBLEWriteDescriptorListener) {
+        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
         if(bleGattCallback==null){
-            onBLEWriteDescriptorListener.onWriteDescriptorFailure(new BLEException(BLEException.WRITE_DESCRIPTOR_FAILURE));
+            onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITEDESC);
             return;
         }
         bleGattCallback.setOnBLEWriteDescriptorListener(onBLEWriteDescriptorListener);
-        if (!new BLEWriteDescriptor().writeDescriptor(bleBluetoothGattPool.getBluetoothGatt(mac), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor)) {
+        int result = new BLibWriteDescriptor().writeDescriptor(bleBluetoothGattPool.getBluetoothGatt(mac), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor);
+        if (result<0) {
             bleGattCallback.setOnBLEConnectListener(null);
-            onBLEWriteDescriptorListener.onWriteDescriptorFailure(new BLEException(BLEException.WRITE_DESCRIPTOR_FAILURE));
+            onBLEWriteDescriptorListener.onWriteDescriptorFailure(result);
         }
     }
 
-    private BLEWriteData bleWriteData;
+    private BLibWriteData bleWriteData;
 
     /**
      * 写数据
@@ -209,13 +214,13 @@ public class BLEManager {
      * @param onBLEWriteDataListener
      * @param onBLEReceiveDataListener
      */
-    public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLEWriteDataListener onBLEWriteDataListener, OnBLEReceiveDataListener onBLEReceiveDataListener) {
-        BLEGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+    public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLibWriteDataListener onBLEWriteDataListener, OnBLibReceiveDataListener onBLEReceiveDataListener) {
+        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
         bleGattCallback.setOnBLEWriteDescriptorListener(null);
         bleGattCallback.setOnBLEWriteDataListener(onBLEWriteDataListener);
         bleGattCallback.setOnBLEReceiveDataListener(onBLEReceiveDataListener);
         if (bleWriteData == null) {
-            bleWriteData = new BLEWriteData(onBLEWriteDataListener);
+            bleWriteData = new BLibWriteData(onBLEWriteDataListener);
         }
         bleWriteData.setOnBLEWriteDataListener(onBLEWriteDataListener);
         bleWriteData.writeData(bleBluetoothGattPool.getBluetoothGatt(mac), bleGattCallback, uuidWriteService, uuidWriteCharacteristics, data);
