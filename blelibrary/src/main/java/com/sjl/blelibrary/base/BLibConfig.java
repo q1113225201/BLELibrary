@@ -3,7 +3,7 @@ package com.sjl.blelibrary.base;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
- * BLELibraryConfig
+ * BLibConfig
  *
  * @author SJL
  * @date 2017/11/20

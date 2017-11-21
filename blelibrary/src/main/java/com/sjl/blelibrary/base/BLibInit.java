@@ -3,7 +3,7 @@ package com.sjl.blelibrary.base;
 import android.app.Application;
 
 /**
- * BLELibraryInit
+ * BLibInit
  *
  * @author SJL
  * @date 2017/11/20

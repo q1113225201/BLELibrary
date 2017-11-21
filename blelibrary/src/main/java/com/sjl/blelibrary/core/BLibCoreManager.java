@@ -15,40 +15,35 @@ import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
- * XiaoDiManager
+ * BLibCoreManager
  *
  * @author SJL
  * @date 2017/5/3
  */
 
-public class BLibManager {
-    private static final String TAG = "XiaoDiManager";
+public class BLibCoreManager {
+    private static final String TAG = "BLibCoreManager";
     private Application application;
-    private String mac;
-    private BLibGattPool bleBluetoothGattPool;
-    private static BLibManager bleManager;
+    private BLibGattPool bLibGattPool;
+    private static BLibCoreManager bLibCoreManager;
 
-    public static BLibManager getInstance() {
-        if (bleManager == null) {
+    public static BLibCoreManager getInstance() {
+        if (bLibCoreManager == null) {
             synchronized (TAG) {
-                if (bleManager == null) {
-                    bleManager = new BLibManager();
+                if (bLibCoreManager == null) {
+                    bLibCoreManager = new BLibCoreManager();
                 }
             }
         }
-        return bleManager;
+        return bLibCoreManager;
     }
 
-    private BLibManager() {
+    private BLibCoreManager() {
         this.application = BLibInit.application;
         if(this.application==null){
             throw new NullPointerException();
         }
-        initPool();
-    }
-
-    private void initPool() {
-        bleBluetoothGattPool = new BLibGattPool();
+        bLibGattPool = new BLibGattPool();
     }
 
     /**
@@ -97,8 +92,7 @@ public class BLibManager {
      * @return
      */
     public boolean isConnect(String mac) {
-        setMac(mac);
-        return bleBluetoothGattPool.isConnect(mac);
+        return bLibGattPool.isConnect(mac);
     }
 
     private BLibScanner bleScanner;
@@ -144,7 +138,7 @@ public class BLibManager {
      * @param onBLEConnectListener
      */
     public void connect(final String mac, final OnBLibConnectListener onBLEConnectListener) {
-        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+        BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         if (bleGattCallback == null) {
             bleGattCallback = new BLibGattCallback();
         }
@@ -168,15 +162,14 @@ public class BLibManager {
                 onBLEConnectListener.onServicesDiscovered(gatt, status);
             }
         });
-        setMac(mac);
-        BluetoothGatt bluetoothGatt = bleBluetoothGattPool.getBluetoothGatt(mac);
+        BluetoothGatt bluetoothGatt = bLibGattPool.getBluetoothGatt(mac);
         if (bluetoothGatt == null) {
             bluetoothGatt = new BLibConnect().connect(application, mac, bleGattCallback);
         }
         if (bluetoothGatt == null) {
             onBLEConnectListener.onConnectFailure(null, BLibCode.ER_CONNECTED);
         }
-        bleBluetoothGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
+        bLibGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
     }
 
     /**
@@ -189,13 +182,13 @@ public class BLibManager {
      * @param onBLEWriteDescriptorListener
      */
     public void writeDescriptor(String mac, String uuidDescriptorService, String uuidDescriptorCharacteristic, String uuidDescriptor, OnBLibWriteDescriptorListener onBLEWriteDescriptorListener) {
-        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+        BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         if(bleGattCallback==null){
             onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITEDESC);
             return;
         }
         bleGattCallback.setOnBLEWriteDescriptorListener(onBLEWriteDescriptorListener);
-        int result = new BLibWriteDescriptor().writeDescriptor(bleBluetoothGattPool.getBluetoothGatt(mac), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor);
+        int result = new BLibWriteDescriptor().writeDescriptor(bLibGattPool.getBluetoothGatt(mac), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor);
         if (result<0) {
             bleGattCallback.setOnBLEConnectListener(null);
             onBLEWriteDescriptorListener.onWriteDescriptorFailure(result);
@@ -215,7 +208,7 @@ public class BLibManager {
      * @param onBLEReceiveDataListener
      */
     public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLibWriteDataListener onBLEWriteDataListener, OnBLibReceiveDataListener onBLEReceiveDataListener) {
-        BLibGattCallback bleGattCallback = bleBluetoothGattPool.getBluetoothGattCallback(mac);
+        BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         bleGattCallback.setOnBLEWriteDescriptorListener(null);
         bleGattCallback.setOnBLEWriteDataListener(onBLEWriteDataListener);
         bleGattCallback.setOnBLEReceiveDataListener(onBLEReceiveDataListener);
@@ -223,11 +216,7 @@ public class BLibManager {
             bleWriteData = new BLibWriteData(onBLEWriteDataListener);
         }
         bleWriteData.setOnBLEWriteDataListener(onBLEWriteDataListener);
-        bleWriteData.writeData(bleBluetoothGattPool.getBluetoothGatt(mac), bleGattCallback, uuidWriteService, uuidWriteCharacteristics, data);
-    }
-
-    private void setMac(String mac) {
-        this.mac = mac;
+        bleWriteData.writeData(bLibGattPool.getBluetoothGatt(mac), bleGattCallback, uuidWriteService, uuidWriteCharacteristics, data);
     }
 
     /**
@@ -236,6 +225,6 @@ public class BLibManager {
      * @param mac
      */
     public synchronized void disconnectGatt(String mac) {
-        bleBluetoothGattPool.disconnectGatt(mac);
+        bLibGattPool.disconnectGatt(mac);
     }
 }

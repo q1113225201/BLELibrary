@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * BLEBluetoothGattPool
+ * BLibGattPool
  *
  * @author SJL
  * @date 2017/5/4
  */
 
 public class BLibGattPool {
-    private static final String TAG = "BLEBluetoothGattPool";
+    private static final String TAG = "BLibGattPool";
     private Map<String, BluetoothGattItem> gattMap = new HashMap<>();
     private boolean terminalDelete = false;
 

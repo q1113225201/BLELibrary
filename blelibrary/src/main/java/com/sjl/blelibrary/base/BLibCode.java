@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * BLELibraryCode
+ * BLibCode
  *
  * @author SJL
  * @date 2017/11/20

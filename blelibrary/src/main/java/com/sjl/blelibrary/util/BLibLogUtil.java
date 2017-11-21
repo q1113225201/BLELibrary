@@ -6,13 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
- * BLELogUtil
+ * BLibLogUtil
  *
  * @author SJL
  * @date 2017/3/24
  */
 public class BLibLogUtil {
-    private static final String TAG = "BLELogUtil";
+    private static final String TAG = "BLibLogUtil";
     public static Boolean DEBUG = false; // 日志控制总开关 true 在开发工具后台打印日志 false 不打印日志
     private static char LOG_TYPE = 'v';// 输入日志类型，w代表只输出告警信息等，v代表输出所有信息
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);// 日志的输出格式

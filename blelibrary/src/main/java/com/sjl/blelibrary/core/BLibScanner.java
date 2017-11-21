@@ -13,14 +13,14 @@ import com.sjl.blelibrary.base.BLibCode;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
- * BLEScanner
+ * BLibScanner
  *
  * @author SJL
  * @date 2017/5/3
  */
 @SuppressLint("NewApi")
 public class BLibScanner extends ScanCallback {
-    private static final String TAG = "BLEScanner";
+    private static final String TAG = "BLibScanner";
 
     private static BluetoothLeScanner bluetoothLeScanner;
     private boolean isScanning = false;

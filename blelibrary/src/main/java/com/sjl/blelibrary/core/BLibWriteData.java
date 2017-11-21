@@ -12,14 +12,14 @@ import com.sjl.blelibrary.util.BLibLogUtil;
 import java.util.UUID;
 
 /**
- * BLEWriteData
+ * BLibWriteData
  *
  * @author SJL
  * @date 2017/5/3
  */
 
 public class BLibWriteData {
-    private static final String TAG = "BLEWriteData";
+    private static final String TAG = "BLibWriteData";
     public static final long WAIT_TIME = 70;//两组数据之间的时间间隔
     public static final int MAX_BYTES = 20;// 蓝牙发送数据分包，每个包的最大长度为20个字节
     private int currentPosition = 0;

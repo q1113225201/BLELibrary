@@ -11,14 +11,14 @@ import com.sjl.blelibrary.util.BLibLogUtil;
 import java.util.UUID;
 
 /**
- * BLEWriteDescriptor
+ * BLibWriteDescriptor
  *
  * @author SJL
  * @date 2017/5/3
  */
 
 public class BLibWriteDescriptor {
-    private static final String TAG = "BLEWriteDescriptor";
+    private static final String TAG = "BLibWriteDescriptor";
 
     public BLibWriteDescriptor() {
     }

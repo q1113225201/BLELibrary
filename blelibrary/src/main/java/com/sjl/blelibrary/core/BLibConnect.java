@@ -9,7 +9,7 @@ import android.content.Context;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
- * BLEConnect
+ * BLibConnect
  *
  * @author SJL
  * @date 2017/5/3

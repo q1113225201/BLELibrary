@@ -14,7 +14,7 @@ import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
- * BLEGattCallback
+ * BLibGattCallback
  *
  * @author SJL
  * @date 2017/2/8

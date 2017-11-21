@@ -3,7 +3,7 @@ package com.sjl.blelibrary.util;
 import java.util.Locale;
 
 /**
- * BLEByteUtil
+ * BLibByteUtil
  *
  * @author SJL
  * @date 2017/4/21
