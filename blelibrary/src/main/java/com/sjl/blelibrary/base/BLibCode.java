@@ -16,15 +16,15 @@ import java.util.Map;
 
 public class BLibCode {
     public static final int ER_DISCONNECT = -1000;//断开连接
-
+    //扫描的错误
     public static final int ER_DEVICE_NOT_GOUND = -1100;//未发现设备
-
+    //连接时的错误
     public static final int ER_CONNECTED = -1200;//连接错误
     public static final int ER_CONNECTED_MAX = -1201;//蓝牙连接数上限
     public static final int ER_GATT_CONN_TIMEOUT = -1202;//GATT连接超时
     public static final int ER_GATT_NO_RESSOURCES = -1203;//设备主动断开连接
     public static final int ER_DISCONNECT_BY_DEVICE = -1204;//设备主动断开连接
-
+    //写描述符的错误
     public static final int ER_WRITEDESC = -1300;//写描述符非法
     public static final int ER_WRITEDESC_GET_SERVICE = -1301;//获取写描述符服务错误
     public static final int ER_WRITEDESC_GET_CHARACTERISTIC = -1302;//获取写描述符特性错误
@@ -32,7 +32,7 @@ public class BLibCode {
     public static final int ER_WRITEDESC_GET_DESC = -1304;//获取描述符错误
     public static final int ER_WRITEDESC_WRITE_DESC = -1305;//写描述符错误
     public static final int ER_WRITEDESC_CALLBACK = -1306;//写描述符回调失败
-
+    //写数据的错误
     public static final int ER_WRITEDATA_GET_SERVICE = -1401;//获取写数据服务错误
     public static final int ER_WRITEDATA_GET_CHARACTERISTIC = -1402;//获取写数据特性错误
     public static final int ER_WRITEDATA_WRITE_DATA = -1403;//写数据错误
