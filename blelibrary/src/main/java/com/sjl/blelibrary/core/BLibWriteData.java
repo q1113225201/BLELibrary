@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
-import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.constant.BLibCode;
 import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
 import com.sjl.blelibrary.util.BLibByteUtil;
 import com.sjl.blelibrary.util.BLibLogUtil;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * BLibWriteData
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 
@@ -41,13 +41,13 @@ public class BLibWriteData {
         BluetoothGattService bluetoothGattService = gatt.getService(UUID.fromString(uuidWriteService));
         if (bluetoothGattService == null) {
             BLibLogUtil.e(TAG, "writeData getService failure");
-            onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_GET_SERVICE);
+            onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_GET_SERVICE);
             return;
         }
         BluetoothGattCharacteristic bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(UUID.fromString(uuidWriteCharacteristics));
         if (bluetoothGattCharacteristic == null) {
             BLibLogUtil.e(TAG, "writeData getCharacteristic failure");
-            onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_GET_CHARACTERISTIC);
+            onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_GET_CHARACTERISTIC);
             return;
         }
         //分包写数据
@@ -96,12 +96,12 @@ public class BLibWriteData {
                     BLibLogUtil.d(TAG, String.format("position=%d,%s", currentPosition, BLibByteUtil.bytesToHexString(sendValue)));
                     if (!bluetoothGattCharacteristic.setValue(sendValue)) {
                         BLibLogUtil.e(TAG, "writeOneSet setValue failure");
-                        onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_WRITE_DATA);
+                        onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_WRITE_DATA);
                         return;
                     }
                     if (!gatt.writeCharacteristic(bluetoothGattCharacteristic)) {
                         BLibLogUtil.e(TAG, "writeOneSet writeCharacteristic failure");
-                        onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_WRITE_CHARACTERISTIC);
+                        onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_WRITE_CHARACTERISTIC);
                         return;
                     }
                 } catch (Exception e) {

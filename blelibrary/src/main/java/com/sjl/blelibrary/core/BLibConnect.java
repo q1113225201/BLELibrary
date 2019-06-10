@@ -11,7 +11,7 @@ import com.sjl.blelibrary.util.BLibLogUtil;
 /**
  * BLibConnect
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 

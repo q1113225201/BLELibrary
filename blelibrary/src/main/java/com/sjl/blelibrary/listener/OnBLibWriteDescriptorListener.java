@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 /**
  * OnBLEWriteDescriptorListener
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 

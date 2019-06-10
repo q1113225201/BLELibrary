@@ -1,11 +1,11 @@
-package com.sjl.blelibrary.base;
+package com.sjl.blelibrary;
 
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * BLibConfig
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/11/20
  */
 

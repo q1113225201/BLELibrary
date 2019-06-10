@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 
-import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.constant.BLibCode;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * BLibWriteDescriptor
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 
@@ -28,24 +28,24 @@ public class BLibWriteDescriptor {
         BluetoothGattService bluetoothGattService = gatt.getService(UUID.fromString(uuidDescriptorService));
         if (bluetoothGattService == null) {
             BLibLogUtil.e(TAG, "writeDescriptor getService null");
-            return BLibCode.ER_WRITEDESC_GET_SERVICE;
+            return BLibCode.ER_WRITE_DESC_GET_SERVICE;
         }
 
         //获取特性
         BluetoothGattCharacteristic bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(UUID.fromString(uuidDescriptorCharacteristic));
         if (bluetoothGattCharacteristic == null) {
             BLibLogUtil.e(TAG, "writeDescriptor getCharacteristic null");
-            return BLibCode.ER_WRITEDESC_GET_CHARACTERISTIC;
+            return BLibCode.ER_WRITE_DESC_GET_CHARACTERISTIC;
         }
         if (!gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)) {
             BLibLogUtil.e(TAG, "writeDescriptor setCharacteristicNotification null");
-            return BLibCode.ER_WRITEDESC_ENABLE_NOTIFICATION;
+            return BLibCode.ER_WRITE_DESC_ENABLE_NOTIFICATION;
         }
         //设置蓝牙返回数据提醒
         BluetoothGattDescriptor bluetoothGattDescriptor = bluetoothGattCharacteristic.getDescriptor(UUID.fromString(uuidDescriptor));
         if (bluetoothGattDescriptor == null) {
             BLibLogUtil.e(TAG, "writeDescriptor getDescriptor null");
-            return BLibCode.ER_WRITEDESC_GET_DESC;
+            return BLibCode.ER_WRITE_DESC_GET_DESC;
         }
         //根据特征属性设置
         if((bluetoothGattCharacteristic.getProperties()&BluetoothGattCharacteristic.PROPERTY_NOTIFY)==0) {
@@ -58,7 +58,7 @@ public class BLibWriteDescriptor {
 
         if (!gatt.writeDescriptor(bluetoothGattDescriptor)) {
             BLibLogUtil.e(TAG, "writeDescriptor writeDescriptor false");
-            return BLibCode.ER_WRITEDESC_WRITE_DESC;
+            return BLibCode.ER_WRITE_DESC_WRITE_DESC;
         }
         return 1;
     }

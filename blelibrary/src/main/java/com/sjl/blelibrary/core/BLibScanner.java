@@ -9,20 +9,22 @@ import android.bluetooth.le.ScanResult;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.constant.BLibCode;
 import com.sjl.blelibrary.util.BLibLogUtil;
+
+import java.util.List;
 
 /**
  * BLibScanner
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 @SuppressLint("NewApi")
-public class BLibScanner extends ScanCallback {
+public class BLibScanner {
     private static final String TAG = "BLibScanner";
 
-    private static BluetoothLeScanner bluetoothLeScanner;
+    private BluetoothLeScanner bluetoothLeScanner;
     private boolean isScanning = false;
     //超时时间
     private int timeout = 5000;
@@ -30,19 +32,38 @@ public class BLibScanner extends ScanCallback {
     private Handler timeoutHandler = new Handler(Looper.getMainLooper());
     //扫描回调
     private OnBLEScanListener onBLEScanListener;
+    private ScanCallback scanCallback = new ScanCallback() {
 
-    public interface OnBLEScanListener {
-        void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord);
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
 
-        void onScanFailed(int code);
+            BLibLogUtil.i(TAG, "ScanResult:" + result);
+            onBLEScanListener.onScanResult(result.getDevice(), result.getRssi(), result.getScanRecord().getBytes());
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+            BLibLogUtil.i(TAG, "onBatchScanResults:" + results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            BLibLogUtil.e(TAG, "onScanFailed:" + errorCode);
+        }
+    };
+
+    public BLibScanner() {
+        this(null);
     }
 
     public BLibScanner(OnBLEScanListener onBLEScanListener) {
-        this.onBLEScanListener = onBLEScanListener;
-        init();
+        this(onBLEScanListener, 0);
     }
 
-    public BLibScanner(int timeout, OnBLEScanListener onBLEScanListener) {
+    public BLibScanner(OnBLEScanListener onBLEScanListener, int timeout) {
         this.timeout = timeout;
         this.onBLEScanListener = onBLEScanListener;
         init();
@@ -58,14 +79,13 @@ public class BLibScanner extends ScanCallback {
      * 开始扫描
      */
     public void startScan() {
-        init();
-        bluetoothLeScanner.startScan(this);
+        bluetoothLeScanner.startScan(scanCallback);
         isScanning = true;
         if (timeout > 0) {
             timeoutHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    scanTimeOut();
+                    scanTimeout();
                 }
             }, timeout);
         }
@@ -74,11 +94,11 @@ public class BLibScanner extends ScanCallback {
     /**
      * 扫描超时
      */
-    private void scanTimeOut() {
+    private void scanTimeout() {
+        BLibLogUtil.d(TAG, "scanTimeout:"+isScanning);
         if (isScanning) {
-            BLibLogUtil.e(TAG, "scanTimeOut");
             stopScan();
-            onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_GOUND);
+            onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_FOUND);
         }
     }
 
@@ -86,32 +106,24 @@ public class BLibScanner extends ScanCallback {
      * 停止扫描
      */
     public void stopScan() {
-        init();
-        isScanning = false;
-        bluetoothLeScanner.stopScan(this);
-    }
-
-    @Override
-    public void onScanResult(int callbackType, ScanResult result) {
-        super.onScanResult(callbackType, result);
-
-        BLibLogUtil.e(TAG, "ScanResult:" + result);
-        onBLEScanListener.onScanResult(result.getDevice(), result.getRssi(), result.getScanRecord().getBytes());
-    }
-
-    public OnBLEScanListener getOnBLEScanListener() {
-        return onBLEScanListener;
+        BLibLogUtil.d(TAG, "stopScan:"+isScanning);
+        if (isScanning) {
+            isScanning = false;
+            bluetoothLeScanner.stopScan(scanCallback);
+        }
     }
 
     public void setOnBLEScanListener(OnBLEScanListener onBLEScanListener) {
         this.onBLEScanListener = onBLEScanListener;
     }
 
-    public int getTimeout() {
-        return timeout;
-    }
-
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public interface OnBLEScanListener {
+        void onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord);
+
+        void onScanFailed(int code);
     }
 }

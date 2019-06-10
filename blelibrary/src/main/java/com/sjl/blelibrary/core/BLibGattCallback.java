@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
 
-import com.sjl.blelibrary.base.BLibCode;
+import com.sjl.blelibrary.constant.BLibCode;
 import com.sjl.blelibrary.listener.OnBLibConnectListener;
 import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
 import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
@@ -16,7 +16,7 @@ import com.sjl.blelibrary.util.BLibLogUtil;
 /**
  * BLibGattCallback
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/2/8
  */
 
@@ -80,7 +80,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
         } else {
             BLibLogUtil.e(TAG, "onCharacteristicWrite status=" + status + ",characteristic uuid=" + characteristic.getUuid().toString());
             if (onBLEWriteDataListener != null) {
-                onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITEDATA_CALLBACK);
+                onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_CALLBACK);
             }
         }
     }
@@ -112,7 +112,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
         } else {
             BLibLogUtil.e(TAG, "onDescriptorWrite status=" + status);
             if (onBLEWriteDescriptorListener != null) {
-                onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITEDESC_CALLBACK);
+                onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITE_DESC_CALLBACK);
             }
         }
     }

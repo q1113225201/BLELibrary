@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * BLibGattPool
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/4
  */
 

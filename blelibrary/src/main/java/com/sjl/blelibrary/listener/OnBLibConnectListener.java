@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGatt;
 /**
  * OnBLEConnectListener
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/3
  */
 

@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sjl.blelibrary.base.BLibCode;
-import com.sjl.blelibrary.core.BLibCoreManager;
+import com.sjl.blelibrary.constant.BLibCode;
+import com.sjl.blelibrary.BLibManager;
 import com.sjl.blelibrary.core.BLibScanner;
 import com.sjl.blelibrary.listener.OnBLibConnectListener;
 import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * 蓝牙库的简单演示
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/5/8
  */
 public class MainActivity extends Activity {
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private TextView tvCurrentMac;
     private ListView lv;
 
-    private BLibCoreManager bleManager;
+    private BLibManager bleManager;
     private List<String> macList = new ArrayList<>();
     private ArrayAdapter adapter;
 
@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
                 tvCurrentMac.setText(currentMac);
             }
         });
-        bleManager = BLibCoreManager.getInstance();
+        bleManager = BLibManager.getInstance();
         PermisstionUtil.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_CODE, "5.0之后使用蓝牙需要位置权限", new PermisstionUtil.OnPermissionResult() {
             @Override
             public void granted(int requestCode) {

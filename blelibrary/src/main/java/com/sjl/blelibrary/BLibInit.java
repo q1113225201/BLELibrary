@@ -1,11 +1,13 @@
-package com.sjl.blelibrary.base;
+package com.sjl.blelibrary;
 
 import android.app.Application;
+
+import com.sjl.blelibrary.constant.BLibCode;
 
 /**
  * BLibInit
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/11/20
  */
 

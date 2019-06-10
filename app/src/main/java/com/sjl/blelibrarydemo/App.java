@@ -2,12 +2,12 @@ package com.sjl.blelibrarydemo;
 
 import android.app.Application;
 
-import com.sjl.blelibrary.base.BLibInit;
+import com.sjl.blelibrary.BLibInit;
 
 /**
  * App
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/11/20
  */
 

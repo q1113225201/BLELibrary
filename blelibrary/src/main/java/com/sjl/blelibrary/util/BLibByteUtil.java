@@ -5,7 +5,7 @@ import java.util.Locale;
 /**
  * BLibByteUtil
  *
- * @author SJL
+ * @author 林zero
  * @date 2017/4/21
  */
 
