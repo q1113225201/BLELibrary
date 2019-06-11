@@ -3,6 +3,7 @@ package com.sjl.blelibrary;
 import android.app.Application;
 
 import com.sjl.blelibrary.constant.BLibCode;
+import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
  * BLibInit
@@ -28,9 +29,24 @@ public class BLibInit {
 
     public static Application application;
 
-    public void init(Application application) {
+    public BLibInit init(Application application) {
         BLibInit.application = application;
         //初始化错误码列表
         BLibCode.init(application);
+        return bleLibraryInit;
+    }
+
+    //是否调试模式
+    private boolean debug = false;
+
+    public BLibInit setDebug(boolean debug) {
+        this.debug = debug;
+        //日志打印开关
+        BLibLogUtil.DEBUG = debug;
+        return bleLibraryInit;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }

@@ -41,12 +41,12 @@ public class BLibGattCallback extends BluetoothGattCallback {
                 }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 //断开连接gatt server
-                BLibLogUtil.e(TAG, "onConnectionStateChange state disconnected");
+                BLibLogUtil.d(TAG, "onConnectionStateChange state disconnected");
                 if (onBLEConnectListener != null) {
                     onBLEConnectListener.onConnectFailure(gatt, BLibCode.ER_DISCONNECT);
                 }
             } else {
-                BLibLogUtil.e(TAG, "onConnectionStateChange status=" + status + ",newState=" + newState);
+                BLibLogUtil.d(TAG, "onConnectionStateChange status=" + status + ",newState=" + newState);
             }
         } else {
             BLibLogUtil.e(TAG, "onConnectionStateChange status=" + status);
@@ -65,7 +65,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
                 onBLEConnectListener.onServicesDiscovered(gatt, status);
             }
         } else {
-            BLibLogUtil.e(TAG, "onServicesDiscovered status=" + status);
+            BLibLogUtil.d(TAG, "onServicesDiscovered status=" + status);
         }
     }
 
@@ -78,7 +78,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
                 onBLEWriteDataListener.onWriteDataSuccess(gatt, characteristic, status);
             }
         } else {
-            BLibLogUtil.e(TAG, "onCharacteristicWrite status=" + status + ",characteristic uuid=" + characteristic.getUuid().toString());
+            BLibLogUtil.d(TAG, "onCharacteristicWrite status=" + status + ",characteristic uuid=" + characteristic.getUuid().toString());
             if (onBLEWriteDataListener != null) {
                 onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DATA_CALLBACK);
             }
@@ -110,7 +110,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
                 onBLEWriteDescriptorListener.onWriteDescriptorSuccess(gatt, descriptor, status);
             }
         } else {
-            BLibLogUtil.e(TAG, "onDescriptorWrite status=" + status);
+            BLibLogUtil.d(TAG, "onDescriptorWrite status=" + status);
             if (onBLEWriteDescriptorListener != null) {
                 onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITE_DESC_CALLBACK);
             }

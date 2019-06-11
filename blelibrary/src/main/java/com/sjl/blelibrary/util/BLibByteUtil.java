@@ -13,7 +13,7 @@ public class BLibByteUtil {
 
     //以十六进制字符输出字节数组到日志,每两位字符进行分隔
     public static String bytesToHexString(byte[] src) {
-        StringBuilder stringBuilder = new StringBuilder("");
+        StringBuilder stringBuilder = new StringBuilder();
         if (src == null || src.length <= 0) {
             return null;
         }
@@ -33,7 +33,7 @@ public class BLibByteUtil {
     }
 
     //截取一部分字节
-    public static byte[] getSubbytes(byte[] bytes, int start, int len) {
+    public static byte[] subBytes(byte[] bytes, int start, int len) {
         if (bytes.length < len || len == 0) {
             return null;
         } else if (bytes.length == len) {

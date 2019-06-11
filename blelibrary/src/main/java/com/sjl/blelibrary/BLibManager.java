@@ -3,10 +3,14 @@ package com.sjl.blelibrary;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.widget.Toast;
 
 import com.sjl.blelibrary.constant.BLibCode;
+import com.sjl.blelibrary.core.BLibAdvertiser;
 import com.sjl.blelibrary.core.BLibConnect;
 import com.sjl.blelibrary.core.BLibGattCallback;
 import com.sjl.blelibrary.core.BLibGattPool;
@@ -25,7 +29,6 @@ import com.sjl.blelibrary.util.BLibLogUtil;
  * @author 林zero
  * @date 2017/5/3
  */
-
 public class BLibManager {
     private static final String TAG = "BLibManager";
     private Application application;
@@ -45,7 +48,7 @@ public class BLibManager {
 
     private BLibManager() {
         this.application = BLibInit.application;
-        if(this.application==null){
+        if (this.application == null) {
             throw new NullPointerException();
         }
         bLibGattPool = new BLibGattPool();
@@ -91,6 +94,29 @@ public class BLibManager {
     }
 
     /**
+     * 是否打开蓝牙
+     *
+     * @return
+     */
+    public boolean openBluetooth() {
+        if (!isSupportBluetooth()) {
+            //不支持蓝牙
+            Toast.makeText(application, "不支持蓝牙", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isSupportBLE()) {
+            //不支持低功耗蓝牙
+            Toast.makeText(application, "不支持低功耗蓝牙", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isBluetoothEnable()) {
+            enableBluetooth();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 是否已连接
      *
      * @param mac
@@ -119,8 +145,11 @@ public class BLibManager {
      * @param onBLEScanListener
      */
     public void startScan(int timeout, BLibScanner.OnBLEScanListener onBLEScanListener) {
+        if (!openBluetooth()) {
+            return;
+        }
         if (bleScanner == null) {
-            bleScanner = new BLibScanner(onBLEScanListener,timeout);
+            bleScanner = new BLibScanner(onBLEScanListener, timeout);
         }
         bleScanner.setOnBLEScanListener(onBLEScanListener);
         bleScanner.setTimeout(timeout);
@@ -136,6 +165,43 @@ public class BLibManager {
         }
     }
 
+    private BLibAdvertiser bLibAdvertiser;
+
+    /**
+     * 开始广播
+     */
+    public void startAdvertising(AdvertiseSettings settings, AdvertiseData advertiseData, BLibAdvertiser.OnBLEAdvertisingListener onBLEAdvertisingListener) {
+        startAdvertising(settings, advertiseData, null, onBLEAdvertisingListener);
+    }
+
+    /**
+     * 开始广播
+     *
+     * @param settings
+     * @param advertiseData
+     * @param scanResponse
+     * @param onBLEAdvertisingListener
+     */
+    public void startAdvertising(AdvertiseSettings settings, AdvertiseData advertiseData, AdvertiseData scanResponse, BLibAdvertiser.OnBLEAdvertisingListener onBLEAdvertisingListener) {
+        if (!openBluetooth()) {
+            return;
+        }
+        if (bLibAdvertiser == null) {
+            bLibAdvertiser = new BLibAdvertiser(onBLEAdvertisingListener);
+        }
+        bLibAdvertiser.setOnBLEAdvertisingListener(onBLEAdvertisingListener);
+        bLibAdvertiser.startAdvertising(settings, advertiseData, scanResponse);
+    }
+
+    /**
+     * 停止广播
+     */
+    public void stopAdvertising() {
+        if (bLibAdvertiser != null) {
+            bLibAdvertiser.stopAdvertising();
+        }
+    }
+
     /**
      * 连接设备
      *
@@ -143,6 +209,9 @@ public class BLibManager {
      * @param onBLEConnectListener
      */
     public void connect(final String mac, final OnBLibConnectListener onBLEConnectListener) {
+        if (!openBluetooth()) {
+            return;
+        }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         if (bleGattCallback == null) {
             bleGattCallback = new BLibGattCallback();
@@ -154,7 +223,7 @@ public class BLibManager {
             }
 
             @Override
-            public void onConnectFailure(BluetoothGatt gatt,int code) {
+            public void onConnectFailure(BluetoothGatt gatt, int code) {
                 if (gatt != null && gatt.getDevice().getAddress().toUpperCase().equals(mac.toUpperCase())) {
                     BLibLogUtil.e(TAG, "onConnectFailure");
                     onBLEConnectListener.onConnectFailure(gatt, code);
@@ -187,14 +256,17 @@ public class BLibManager {
      * @param onBLEWriteDescriptorListener
      */
     public void writeDescriptor(String mac, String uuidDescriptorService, String uuidDescriptorCharacteristic, String uuidDescriptor, OnBLibWriteDescriptorListener onBLEWriteDescriptorListener) {
+        if (!openBluetooth()) {
+            return;
+        }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
-        if(bleGattCallback==null){
+        if (bleGattCallback == null) {
             onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_WRITE_DESC);
             return;
         }
         bleGattCallback.setOnBLEWriteDescriptorListener(onBLEWriteDescriptorListener);
         int result = new BLibWriteDescriptor().writeDescriptor(bLibGattPool.getBluetoothGatt(mac), uuidDescriptorService, uuidDescriptorCharacteristic, uuidDescriptor);
-        if (result<0) {
+        if (result < 0) {
             bleGattCallback.setOnBLEConnectListener(null);
             onBLEWriteDescriptorListener.onWriteDescriptorFailure(result);
         }
@@ -213,6 +285,9 @@ public class BLibManager {
      * @param onBLEReceiveDataListener
      */
     public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLibWriteDataListener onBLEWriteDataListener, OnBLibReceiveDataListener onBLEReceiveDataListener) {
+        if (!openBluetooth()) {
+            return;
+        }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         bleGattCallback.setOnBLEWriteDescriptorListener(null);
         bleGattCallback.setOnBLEWriteDataListener(onBLEWriteDataListener);

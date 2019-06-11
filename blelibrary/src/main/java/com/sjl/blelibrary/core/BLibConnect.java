@@ -24,12 +24,12 @@ public class BLibConnect {
     public BluetoothGatt connect(Context context,String mac,BluetoothGattCallback gattCallback){
         BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
         if (bluetoothDevice == null) {
-            BLibLogUtil.e(TAG, "connect getRemoteDevice failure");
+            BLibLogUtil.d(TAG, "connect getRemoteDevice failure");
             return null;
         }
         BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallback);
         if (bluetoothGatt == null) {
-            BLibLogUtil.e(TAG, "connect connectGatt failure");
+            BLibLogUtil.d(TAG, "connect connectGatt failure");
             return null;
         }
         return bluetoothGatt;

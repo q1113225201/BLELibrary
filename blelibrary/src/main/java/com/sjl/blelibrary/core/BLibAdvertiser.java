@@ -26,7 +26,7 @@ public class BLibAdvertiser {
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
             super.onStartSuccess(settingsInEffect);
-            BLibLogUtil.i(TAG, "onStartSuccess:" + settingsInEffect);
+            BLibLogUtil.d(TAG, "onStartSuccess:" + settingsInEffect);
             if (onBLEAdvertisingListener != null) {
                 onBLEAdvertisingListener.onStartSuccess(settingsInEffect);
             }
@@ -38,19 +38,19 @@ public class BLibAdvertiser {
             int error = BLibCode.ER_ADVERTISE_INTERNAL_ERROR;
             if (errorCode == ADVERTISE_FAILED_DATA_TOO_LARGE) {
                 error = BLibCode.ER_ADVERTISE_DATA_TOO_LARGE;
-                BLibLogUtil.e(TAG, "Failed to start advertising as the advertise data to be broadcasted is larger than 31 bytes.");
+                BLibLogUtil.d(TAG, "Failed to start advertising as the advertise data to be broadcasted is larger than 31 bytes.");
             } else if (errorCode == ADVERTISE_FAILED_TOO_MANY_ADVERTISERS) {
                 error = BLibCode.ER_ADVERTISE_TOO_MANY_ADVERTISERS;
-                BLibLogUtil.e(TAG, "Failed to start advertising because no advertising instance is available.");
+                BLibLogUtil.d(TAG, "Failed to start advertising because no advertising instance is available.");
             } else if (errorCode == ADVERTISE_FAILED_ALREADY_STARTED) {
                 error = BLibCode.ER_ADVERTISE_ALREADY_STARTED;
-                BLibLogUtil.e(TAG, "Failed to start advertising as the advertising is already started");
+                BLibLogUtil.d(TAG, "Failed to start advertising as the advertising is already started");
             } else if (errorCode == ADVERTISE_FAILED_INTERNAL_ERROR) {
                 error = BLibCode.ER_ADVERTISE_INTERNAL_ERROR;
-                BLibLogUtil.e(TAG, "Operation failed due to an internal error");
+                BLibLogUtil.d(TAG, "Operation failed due to an internal error");
             } else if (errorCode == ADVERTISE_FAILED_FEATURE_UNSUPPORTED) {
                 error = BLibCode.ER_ADVERTISE_FEATURE_UNSUPPORTED;
-                BLibLogUtil.e(TAG, "This feature is not supported on this platform");
+                BLibLogUtil.d(TAG, "This feature is not supported on this platform");
             }
             if (onBLEAdvertisingListener != null) {
                 onBLEAdvertisingListener.onStartFailure(error);
@@ -66,6 +66,9 @@ public class BLibAdvertiser {
     private void init() {
         if (bluetoothLeAdvertiser == null) {
             bluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+        }
+        if(bluetoothLeAdvertiser==null) {
+            BLibLogUtil.d(TAG, "bluetoothLeAdvertiser == null");
         }
     }
 
@@ -86,7 +89,9 @@ public class BLibAdvertiser {
      */
     public void startAdvertising(AdvertiseSettings settings, AdvertiseData advertiseData, AdvertiseData scanResponse) {
         init();
-        bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponse, advertiseCallback);
+        if(bluetoothLeAdvertiser!=null) {
+            bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponse, advertiseCallback);
+        }
     }
 
     /**
@@ -94,7 +99,13 @@ public class BLibAdvertiser {
      */
     public void stopAdvertising() {
         init();
-        bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
+        if(bluetoothLeAdvertiser!=null) {
+            bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
+        }
+    }
+
+    public void setOnBLEAdvertisingListener(OnBLEAdvertisingListener onBLEAdvertisingListener) {
+        this.onBLEAdvertisingListener = onBLEAdvertisingListener;
     }
 
     public interface OnBLEAdvertisingListener {

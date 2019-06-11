@@ -36,7 +36,7 @@ public class BLibGattPool {
             for (String macItem : macList) {
                 if (System.currentTimeMillis() - gattMap.get(macItem).time > time) {
                     if (terminalDelete) {
-                        BLibLogUtil.e(TAG, macItem + " timeout");
+                        BLibLogUtil.d(TAG, macItem + " timeout");
                         disconnectGatt(macItem);
                     }
                 }
@@ -140,7 +140,7 @@ public class BLibGattPool {
      * @param mac
      */
     public synchronized void disconnectGatt(String mac) {
-        BLibLogUtil.e(TAG, "disconnectGatt:" + mac);
+        BLibLogUtil.d(TAG, "disconnectGatt:" + mac);
         BluetoothGatt bluetoothGatt = getBluetoothGatt(mac);
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();

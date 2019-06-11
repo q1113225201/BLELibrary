@@ -1,34 +1,34 @@
 <resources>
     <string name="app_name">BLELibrary</string>
 
-    <string name="ER_DISCONNECT">断开连接</string>
+    <string name="er_disconnect">断开连接</string>
 
-    <string name="ER_DEVICE_NOT_FOUND">未发现设备</string>
+    <string name="er_device_not_found">未发现设备</string>
 
-    <string name="ER_CONNECTED">连接错误</string>
-    <string name="ER_CONNECTED_MAX">蓝牙连接数上限</string>
-    <string name="ER_GATT_CONN_TIMEOUT">GATT连接超时</string>
-    <string name="ER_GATT_NO_RESOURCES">GATT无资源</string>
-    <string name="ER_DISCONNECT_BY_DEVICE">设备断开连接</string>
+    <string name="er_connected">连接错误</string>
+    <string name="er_connected_max">蓝牙连接数上限</string>
+    <string name="er_gatt_conn_timeout">GATT连接超时</string>
+    <string name="er_gatt_no_resources">GATT无资源</string>
+    <string name="er_disconnect_by_device">设备断开连接</string>
 
-    <string name="ER_WRITE_DESC">写描述符非法</string>
-    <string name="ER_WRITE_DESC_GET_SERVICE">获取写描述符服务错误</string>
-    <string name="ER_WRITE_DESC_GET_CHARACTERISTIC">获取写描述符特性错误</string>
-    <string name="ER_WRITE_DESC_ENABLE_NOTIFICATION">写描述符时使能通知错误</string>
-    <string name="ER_WRITE_DESC_GET_DESC">获取描述符错误</string>
-    <string name="ER_WRITE_DESC_WRITE_DESC">写描述符错误</string>
-    <string name="ER_WRITE_DESC_CALLBACK">写描述符回调失败</string>
+    <string name="er_write_desc">写描述符非法</string>
+    <string name="er_write_desc_get_service">获取写描述符服务错误</string>
+    <string name="er_write_desc_get_characteristic">获取写描述符特性错误</string>
+    <string name="er_write_desc_enable_notification">写描述符时使能通知错误</string>
+    <string name="er_write_desc_get_desc">获取描述符错误</string>
+    <string name="er_write_desc_write_desc">写描述符错误</string>
+    <string name="er_write_desc_callback">写描述符回调失败</string>
 
-    <string name="ER_WRITE_DATA_GET_SERVICE">获取写数据服务错误</string>
-    <string name="ER_WRITE_DATA_GET_CHARACTERISTIC">获取写数据特性错误</string>
-    <string name="ER_WRITE_DATA_WRITE_DATA">写数据错误</string>
-    <string name="ER_WRITE_DATA_WRITE_CHARACTERISTIC">写特征值错误</string>
-    <string name="ER_WRITE_DATA_CALLBACK">写数据回调失败</string>
+    <string name="er_write_data_get_service">获取写数据服务错误</string>
+    <string name="er_write_data_get_characteristic">获取写数据特性错误</string>
+    <string name="er_write_data_write_data">写数据错误</string>
+    <string name="er_write_data_write_characteristic">写特征值错误</string>
+    <string name="er_write_data_callback">写数据回调失败</string>
 
-    <string name="ER_ADVERTISE_DATA_TOO_LARGE">广告数据过长</string>
-    <string name="ER_ADVERTISE_TOO_MANY_ADVERTISERS">无广告实例</string>
-    <string name="ER_ADVERTISE_ALREADY_STARTED">广告已开始</string>
-    <string name="ER_ADVERTISE_INTERNAL_ERROR">广告内部错误</string>
-    <string name="ER_ADVERTISE_FEATURE_UNSUPPORTED">平台不支持该功能</string>
+    <string name="er_advertise_data_too_large">广告数据过长</string>
+    <string name="er_advertise_too_many_advertisers">无广告实例</string>
+    <string name="er_advertise_already_started">广告已开始</string>
+    <string name="er_advertise_internal_error">广告内部错误</string>
+    <string name="er_advertise_feature_unsupported">平台不支持该功能</string>
 
 </resources>

@@ -57,36 +57,36 @@ public class BLibCode {
 
     public static void init(Context context) {
         erMap = new HashMap<>();
-        erMap.put(ER_DISCONNECT, context.getString(R.string.ER_DISCONNECT));
+        erMap.put(ER_DISCONNECT, context.getString(R.string.er_disconnect));
 
-        erMap.put(ER_DEVICE_NOT_FOUND, context.getString(R.string.ER_DEVICE_NOT_FOUND));
+        erMap.put(ER_DEVICE_NOT_FOUND, context.getString(R.string.er_device_not_found));
 
-        erMap.put(ER_CONNECTED, context.getString(R.string.ER_CONNECTED));
-        erMap.put(ER_CONNECTED_MAX, context.getString(R.string.ER_CONNECTED_MAX));
-        erMap.put(ER_GATT_CONN_TIMEOUT, context.getString(R.string.ER_GATT_CONN_TIMEOUT));
-        erMap.put(ER_GATT_NO_RESOURCES, context.getString(R.string.ER_GATT_NO_RESOURCES));
-        erMap.put(ER_DISCONNECT_BY_DEVICE, context.getString(R.string.ER_DISCONNECT_BY_DEVICE));
+        erMap.put(ER_CONNECTED, context.getString(R.string.er_connected));
+        erMap.put(ER_CONNECTED_MAX, context.getString(R.string.er_connected_max));
+        erMap.put(ER_GATT_CONN_TIMEOUT, context.getString(R.string.er_gatt_conn_timeout));
+        erMap.put(ER_GATT_NO_RESOURCES, context.getString(R.string.er_gatt_no_resources));
+        erMap.put(ER_DISCONNECT_BY_DEVICE, context.getString(R.string.er_disconnect_by_device));
 
-        erMap.put(ER_WRITE_DESC, context.getString(R.string.ER_WRITE_DESC));
-        erMap.put(ER_WRITE_DESC_GET_SERVICE, context.getString(R.string.ER_WRITE_DESC_GET_SERVICE));
-        erMap.put(ER_WRITE_DESC_GET_CHARACTERISTIC, context.getString(R.string.ER_WRITE_DESC_GET_CHARACTERISTIC));
-        erMap.put(ER_WRITE_DESC_ENABLE_NOTIFICATION, context.getString(R.string.ER_WRITE_DESC_ENABLE_NOTIFICATION));
-        erMap.put(ER_WRITE_DESC_GET_DESC, context.getString(R.string.ER_WRITE_DESC_GET_DESC));
-        erMap.put(ER_WRITE_DESC_WRITE_DESC, context.getString(R.string.ER_WRITE_DESC_WRITE_DESC));
-        erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.ER_WRITE_DESC_CALLBACK));
-        erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.ER_WRITE_DESC_CALLBACK));
+        erMap.put(ER_WRITE_DESC, context.getString(R.string.er_write_desc));
+        erMap.put(ER_WRITE_DESC_GET_SERVICE, context.getString(R.string.er_write_desc_get_service));
+        erMap.put(ER_WRITE_DESC_GET_CHARACTERISTIC, context.getString(R.string.er_write_desc_get_characteristic));
+        erMap.put(ER_WRITE_DESC_ENABLE_NOTIFICATION, context.getString(R.string.er_write_desc_enable_notification));
+        erMap.put(ER_WRITE_DESC_GET_DESC, context.getString(R.string.er_write_desc_get_desc));
+        erMap.put(ER_WRITE_DESC_WRITE_DESC, context.getString(R.string.er_write_desc_write_desc));
+        erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.er_write_desc_callback));
+        erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.er_write_desc_callback));
 
-        erMap.put(ER_WRITE_DATA_GET_SERVICE, context.getString(R.string.ER_WRITE_DATA_GET_SERVICE));
-        erMap.put(ER_WRITE_DATA_GET_CHARACTERISTIC, context.getString(R.string.ER_WRITE_DATA_GET_CHARACTERISTIC));
-        erMap.put(ER_WRITE_DATA_WRITE_DATA, context.getString(R.string.ER_WRITE_DATA_WRITE_DATA));
-        erMap.put(ER_WRITE_DATA_WRITE_CHARACTERISTIC, context.getString(R.string.ER_WRITE_DATA_WRITE_CHARACTERISTIC));
-        erMap.put(ER_WRITE_DATA_CALLBACK, context.getString(R.string.ER_WRITE_DATA_CALLBACK));
+        erMap.put(ER_WRITE_DATA_GET_SERVICE, context.getString(R.string.er_write_data_get_service));
+        erMap.put(ER_WRITE_DATA_GET_CHARACTERISTIC, context.getString(R.string.er_write_data_get_characteristic));
+        erMap.put(ER_WRITE_DATA_WRITE_DATA, context.getString(R.string.er_write_data_write_data));
+        erMap.put(ER_WRITE_DATA_WRITE_CHARACTERISTIC, context.getString(R.string.er_write_data_write_characteristic));
+        erMap.put(ER_WRITE_DATA_CALLBACK, context.getString(R.string.er_write_data_callback));
 
-        erMap.put(ER_ADVERTISE_DATA_TOO_LARGE, context.getString(R.string.ER_ADVERTISE_DATA_TOO_LARGE));
-        erMap.put(ER_ADVERTISE_TOO_MANY_ADVERTISERS, context.getString(R.string.ER_ADVERTISE_TOO_MANY_ADVERTISERS));
-        erMap.put(ER_ADVERTISE_ALREADY_STARTED, context.getString(R.string.ER_ADVERTISE_ALREADY_STARTED));
-        erMap.put(ER_ADVERTISE_INTERNAL_ERROR, context.getString(R.string.ER_ADVERTISE_INTERNAL_ERROR));
-        erMap.put(ER_ADVERTISE_FEATURE_UNSUPPORTED, context.getString(R.string.ER_ADVERTISE_FEATURE_UNSUPPORTED));
+        erMap.put(ER_ADVERTISE_DATA_TOO_LARGE, context.getString(R.string.er_advertise_data_too_large));
+        erMap.put(ER_ADVERTISE_TOO_MANY_ADVERTISERS, context.getString(R.string.er_advertise_too_many_advertisers));
+        erMap.put(ER_ADVERTISE_ALREADY_STARTED, context.getString(R.string.er_advertise_already_started));
+        erMap.put(ER_ADVERTISE_INTERNAL_ERROR, context.getString(R.string.er_advertise_internal_error));
+        erMap.put(ER_ADVERTISE_FEATURE_UNSUPPORTED, context.getString(R.string.er_advertise_feature_unsupported));
     }
 
     /**

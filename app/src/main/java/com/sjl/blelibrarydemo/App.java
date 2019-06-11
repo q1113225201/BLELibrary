@@ -15,6 +15,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        BLibInit.getInstance().init(this);
+        BLibInit.getInstance().init(this).setDebug(true);
     }
 }

@@ -27,24 +27,24 @@ public class BLibWriteDescriptor {
         //获取GATT服务
         BluetoothGattService bluetoothGattService = gatt.getService(UUID.fromString(uuidDescriptorService));
         if (bluetoothGattService == null) {
-            BLibLogUtil.e(TAG, "writeDescriptor getService null");
+            BLibLogUtil.d(TAG, "writeDescriptor getService null");
             return BLibCode.ER_WRITE_DESC_GET_SERVICE;
         }
 
         //获取特性
         BluetoothGattCharacteristic bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(UUID.fromString(uuidDescriptorCharacteristic));
         if (bluetoothGattCharacteristic == null) {
-            BLibLogUtil.e(TAG, "writeDescriptor getCharacteristic null");
+            BLibLogUtil.d(TAG, "writeDescriptor getCharacteristic null");
             return BLibCode.ER_WRITE_DESC_GET_CHARACTERISTIC;
         }
         if (!gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)) {
-            BLibLogUtil.e(TAG, "writeDescriptor setCharacteristicNotification null");
+            BLibLogUtil.d(TAG, "writeDescriptor setCharacteristicNotification null");
             return BLibCode.ER_WRITE_DESC_ENABLE_NOTIFICATION;
         }
         //设置蓝牙返回数据提醒
         BluetoothGattDescriptor bluetoothGattDescriptor = bluetoothGattCharacteristic.getDescriptor(UUID.fromString(uuidDescriptor));
         if (bluetoothGattDescriptor == null) {
-            BLibLogUtil.e(TAG, "writeDescriptor getDescriptor null");
+            BLibLogUtil.d(TAG, "writeDescriptor getDescriptor null");
             return BLibCode.ER_WRITE_DESC_GET_DESC;
         }
         //根据特征属性设置
