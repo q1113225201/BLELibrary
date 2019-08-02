@@ -74,7 +74,6 @@ public class BLibCode {
         erMap.put(ER_WRITE_DESC_GET_DESC, context.getString(R.string.er_write_desc_get_desc));
         erMap.put(ER_WRITE_DESC_WRITE_DESC, context.getString(R.string.er_write_desc_write_desc));
         erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.er_write_desc_callback));
-        erMap.put(ER_WRITE_DESC_CALLBACK, context.getString(R.string.er_write_desc_callback));
 
         erMap.put(ER_WRITE_DATA_GET_SERVICE, context.getString(R.string.er_write_data_get_service));
         erMap.put(ER_WRITE_DATA_GET_CHARACTERISTIC, context.getString(R.string.er_write_data_get_characteristic));

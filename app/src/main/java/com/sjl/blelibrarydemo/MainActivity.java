@@ -34,7 +34,6 @@ import com.sjl.blelibrary.util.BLibUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -117,13 +116,17 @@ public class MainActivity extends Activity {
      * @param view
      */
     public void scan(View view) {
+        macList.clear();
+        adapter.notifyDataSetChanged();
         bleManager.startScan(10000, new BLibScanner.OnBLEScanListener() {
 
             @Override
             public void onScanResult(BluetoothDevice device, int rssi, ScanRecord scanRecord) {
                 synchronized (MainActivity.this) {
+                    Log.e(TAG,BLibByteUtil.bytesToHexString(scanRecord.getBytes()));
+                    Log.e(TAG,scanRecord.toString());
                     if (!macList.contains(device.getAddress())) {
-                        macList.add(device.getAddress() + "\n" + scanRecord);
+                        macList.add(device.getName() + "\n" + device.getAddress() + "\n" + BLibByteUtil.bytesToHexString(scanRecord.getBytes()));
                         adapter.notifyDataSetChanged();
                     }
                 }

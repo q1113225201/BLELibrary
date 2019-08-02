@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.sjl.blelibrary.constant.BLibCode;
+import com.sjl.blelibrary.util.BLibByteUtil;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class BLibScanner {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-            BLibLogUtil.d(TAG, "ScanResult:" + result);
+            BLibLogUtil.d(TAG, "ScanResult:" + result+"\n"+ BLibByteUtil.bytesToHexString(result.getScanRecord().getBytes()));
             if(onBLEScanListener!=null) {
                 onBLEScanListener.onScanResult(result.getDevice(), result.getRssi(), result.getScanRecord());
             }
@@ -107,7 +108,7 @@ public class BLibScanner {
         BLibLogUtil.d(TAG, "scanTimeout:"+isScanning);
         if (isScanning) {
             stopScan();
-            if(onBLEScanListener!=null) {
+            if(onBLEScanListener!=null&&BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                 onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_FOUND);
             }
         }
@@ -119,7 +120,7 @@ public class BLibScanner {
     public void stopScan() {
         BLibLogUtil.d(TAG, "stopScan:"+isScanning);
         if (isScanning) {
-            if(bluetoothLeScanner!=null) {
+            if(bluetoothLeScanner!=null&&BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                 bluetoothLeScanner.stopScan(scanCallback);
             }
             isScanning = false;
