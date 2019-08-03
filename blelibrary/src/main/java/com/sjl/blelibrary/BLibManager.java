@@ -228,7 +228,7 @@ public class BLibManager {
                     BLibLogUtil.e(TAG, "onConnectFailure");
                     onBLEConnectListener.onConnectFailure(gatt, code);
                 }
-//                disconnectGatt(mac);
+                disconnectGatt(gatt.getDevice().getAddress());
             }
 
             @Override
