@@ -7,6 +7,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -24,12 +25,13 @@ import java.util.List;
  */
 @SuppressLint("NewApi")
 public class BLibScanner {
+    public static final int DEFAULT_TIMEOUT = 5000;
     private static final String TAG = "BLibScanner";
 
     private BluetoothLeScanner bluetoothLeScanner;
     private boolean isScanning = false;
     //超时时间
-    private int timeout = 5000;
+    private int timeout = DEFAULT_TIMEOUT;
     //超时处理
     private Handler timeoutHandler = new Handler(Looper.getMainLooper());
     //扫描回调
@@ -40,8 +42,8 @@ public class BLibScanner {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-            BLibLogUtil.d(TAG, "ScanResult:" + result+"\n"+ BLibByteUtil.bytesToHexString(result.getScanRecord().getBytes()));
-            if(onBLEScanListener!=null) {
+            BLibLogUtil.d(TAG, "ScanResult:" + result + "\n" + BLibByteUtil.bytesToHexString(result.getScanRecord().getBytes()));
+            if (onBLEScanListener != null) {
                 onBLEScanListener.onScanResult(result.getDevice(), result.getRssi(), result.getScanRecord());
             }
         }
@@ -83,12 +85,15 @@ public class BLibScanner {
      * 开始扫描
      */
     public void startScan() {
-        if(isScanning){
+        if (isScanning) {
             return;
         }
         init();
-        if(bluetoothLeScanner!=null) {
-            bluetoothLeScanner.startScan(scanCallback);
+        if (bluetoothLeScanner != null) {
+            ScanSettings scanSettings = new ScanSettings.Builder()
+                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                    .build();
+            bluetoothLeScanner.startScan(null, scanSettings, scanCallback);
             isScanning = true;
         }
         if (timeout > 0) {
@@ -105,10 +110,10 @@ public class BLibScanner {
      * 扫描超时
      */
     private void scanTimeout() {
-        BLibLogUtil.d(TAG, "scanTimeout:"+isScanning);
+        BLibLogUtil.d(TAG, "scanTimeout:" + isScanning);
         if (isScanning) {
             stopScan();
-            if(onBLEScanListener!=null&&BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            if (onBLEScanListener != null && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                 onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_FOUND);
             }
         }
@@ -118,9 +123,9 @@ public class BLibScanner {
      * 停止扫描
      */
     public void stopScan() {
-        BLibLogUtil.d(TAG, "stopScan:"+isScanning);
+        BLibLogUtil.d(TAG, "stopScan:" + isScanning);
         if (isScanning) {
-            if(bluetoothLeScanner!=null&&BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            if (bluetoothLeScanner != null && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                 bluetoothLeScanner.stopScan(scanCallback);
             }
             isScanning = false;

@@ -31,6 +31,10 @@ import com.sjl.blelibrary.util.BLibLogUtil;
  */
 public class BLibManager {
     private static final String TAG = "BLibManager";
+    /**
+     * 最大重连次数
+     */
+    public static final int MAX_CONNECT_NUM = 3;
     private Application application;
     private BLibGattPool bLibGattPool;
     private static BLibManager bLibManager;
@@ -135,7 +139,7 @@ public class BLibManager {
      */
     public void startScan(BLibScanner.OnBLEScanListener onBLEScanListener) {
         //默认设置5秒
-        startScan(5000, onBLEScanListener);
+        startScan(BLibScanner.DEFAULT_TIMEOUT, onBLEScanListener);
     }
 
     /**
@@ -203,6 +207,11 @@ public class BLibManager {
     }
 
     /**
+     * 重连次数
+     */
+    private int connectCnt = 0;
+
+    /**
      * 连接设备
      *
      * @param mac
@@ -212,6 +221,29 @@ public class BLibManager {
         if (!openBluetooth()) {
             return;
         }
+        connectCnt = 0;
+        connectReal(mac, new OnBLibConnectListener() {
+            @Override
+            public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
+                updateBluetoothGatt(gatt);
+                onBLEConnectListener.onConnectSuccess(gatt, status, newState);
+            }
+
+            @Override
+            public void onConnectFailure(BluetoothGatt gatt, int code) {
+                updateBluetoothGatt(gatt);
+                onBLEConnectListener.onConnectFailure(gatt, code);
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                updateBluetoothGatt(gatt);
+                onBLEConnectListener.onServicesDiscovered(gatt, status);
+            }
+        });
+    }
+
+    private void connectReal(final String mac, final OnBLibConnectListener onBLEConnectListener) {
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
         if (bleGattCallback == null) {
             bleGattCallback = new BLibGattCallback();
@@ -224,15 +256,28 @@ public class BLibManager {
 
             @Override
             public void onConnectFailure(BluetoothGatt gatt, int code) {
-                if (gatt != null && gatt.getDevice().getAddress().toUpperCase().equals(mac.toUpperCase())) {
+                if (gatt != null) {
+                    disconnectGatt(gatt);
+                } else {
+                    disconnectGatt(mac);
+                }
+                if (gatt != null && gatt.getDevice().getAddress().equalsIgnoreCase(mac)) {
                     BLibLogUtil.e(TAG, "onConnectFailure");
+                    if (connectCnt >= MAX_CONNECT_NUM || connectCnt == -1) {
+                        onBLEConnectListener.onConnectFailure(gatt, code);
+                    } else if (connectCnt != -1) {
+                        connectCnt++;
+                        BLibLogUtil.d(TAG, "connect num:" + connectCnt);
+                        connectReal(mac, onBLEConnectListener);
+                    }
+                } else {
                     onBLEConnectListener.onConnectFailure(gatt, code);
                 }
-                disconnectGatt(gatt.getDevice().getAddress());
             }
 
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                connectCnt = -1;
                 onBLEConnectListener.onServicesDiscovered(gatt, status);
             }
         });
@@ -244,6 +289,15 @@ public class BLibManager {
             onBLEConnectListener.onConnectFailure(null, BLibCode.ER_CONNECTED);
         }
         bLibGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
+    }
+
+    /**
+     * 更新Gatt
+     */
+    private void updateBluetoothGatt(BluetoothGatt gatt) {
+        if (gatt != null) {
+            bLibGattPool.setBluetoothGatt(gatt.getDevice().getAddress(), gatt, null);
+        }
     }
 
     /**
@@ -301,10 +355,15 @@ public class BLibManager {
 
     /**
      * 断开Gatt连接
-     *
-     * @param mac
      */
     public synchronized void disconnectGatt(String mac) {
         bLibGattPool.disconnectGatt(mac);
+    }
+
+    /**
+     * 断开Gatt连接
+     */
+    public synchronized void disconnectGatt(BluetoothGatt gatt) {
+        bLibGattPool.disconnectGatt(gatt);
     }
 }
