@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">BLELibrary</string>
 
+    <string name="er_disable">未打开蓝牙</string>
+
     <string name="er_disconnect">断开连接</string>
 
     <string name="er_device_not_found">未发现设备</string>

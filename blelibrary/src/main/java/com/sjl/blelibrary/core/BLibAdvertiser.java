@@ -67,13 +67,14 @@ public class BLibAdvertiser {
         if (bluetoothLeAdvertiser == null) {
             bluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
         }
-        if(bluetoothLeAdvertiser==null) {
+        if (bluetoothLeAdvertiser == null) {
             BLibLogUtil.d(TAG, "bluetoothLeAdvertiser == null");
         }
     }
 
     /**
      * 开始广告
+     *
      * @param settings
      * @param advertiseData
      */
@@ -83,13 +84,14 @@ public class BLibAdvertiser {
 
     /**
      * 开始广告
+     *
      * @param settings
      * @param advertiseData
      * @param scanResponse
      */
     public void startAdvertising(AdvertiseSettings settings, AdvertiseData advertiseData, AdvertiseData scanResponse) {
         init();
-        if(bluetoothLeAdvertiser!=null) {
+        if (bluetoothLeAdvertiser != null) {
             bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponse, advertiseCallback);
         }
     }
@@ -99,7 +101,7 @@ public class BLibAdvertiser {
      */
     public void stopAdvertising() {
         init();
-        if(bluetoothLeAdvertiser!=null) {
+        if (bluetoothLeAdvertiser != null && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
         }
     }

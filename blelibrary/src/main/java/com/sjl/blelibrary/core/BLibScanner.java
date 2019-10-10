@@ -81,6 +81,13 @@ public class BLibScanner {
         }
     }
 
+    private Runnable timeoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            scanTimeout();
+        }
+    };
+
     /**
      * 开始扫描
      */
@@ -97,12 +104,7 @@ public class BLibScanner {
             isScanning = true;
         }
         if (timeout > 0) {
-            timeoutHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scanTimeout();
-                }
-            }, timeout);
+            timeoutHandler.postDelayed(timeoutRunnable, timeout);
         }
     }
 
@@ -113,8 +115,8 @@ public class BLibScanner {
         BLibLogUtil.d(TAG, "scanTimeout:" + isScanning);
         if (isScanning) {
             stopScan();
-            if (onBLEScanListener != null && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-                onBLEScanListener.onScanFailed(BLibCode.ER_DEVICE_NOT_FOUND);
+            if (onBLEScanListener != null) {
+                onBLEScanListener.onScanFailed(BluetoothAdapter.getDefaultAdapter().isEnabled() ? BLibCode.ER_DEVICE_NOT_FOUND : BLibCode.ER_DISABLE);
             }
         }
     }
@@ -130,6 +132,7 @@ public class BLibScanner {
             }
             isScanning = false;
         }
+        timeoutHandler.removeCallbacks(timeoutRunnable);
     }
 
     public void setOnBLEScanListener(OnBLEScanListener onBLEScanListener) {

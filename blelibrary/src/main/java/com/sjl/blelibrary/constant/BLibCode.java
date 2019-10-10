@@ -15,6 +15,7 @@ import java.util.Map;
  */
 
 public class BLibCode {
+    public static final int ER_DISABLE = 0;//蓝牙未启动
     public static final int ER_DISCONNECT = -1000;//断开连接
     //扫描的错误
     public static final int ER_DEVICE_NOT_FOUND = -1100;//未发现设备
@@ -57,6 +58,8 @@ public class BLibCode {
 
     public static void init(Context context) {
         erMap = new HashMap<>();
+        erMap.put(ER_DISABLE, context.getString(R.string.er_disable));
+
         erMap.put(ER_DISCONNECT, context.getString(R.string.er_disconnect));
 
         erMap.put(ER_DEVICE_NOT_FOUND, context.getString(R.string.er_device_not_found));
