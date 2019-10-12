@@ -21,19 +21,13 @@ public class BLibConnect {
     public BLibConnect() {
     }
 
-    public BluetoothGatt connect(Context context, String mac, BluetoothGattCallback gattCallback) {
+    public BluetoothGatt connect(Context context,String mac,BluetoothGattCallback gattCallback){
         BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
         if (bluetoothDevice == null) {
             BLibLogUtil.d(TAG, "connect getRemoteDevice failure");
             return null;
         }
-
-        BluetoothGatt bluetoothGatt = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallback, BluetoothDevice.TRANSPORT_LE);
-        } else {
-            bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallback);
-        }
+        BluetoothGatt bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallback);
         if (bluetoothGatt == null) {
             BLibLogUtil.d(TAG, "connect connectGatt failure");
             return null;

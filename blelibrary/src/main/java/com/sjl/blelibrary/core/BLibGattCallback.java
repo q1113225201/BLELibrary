@@ -11,6 +11,7 @@ import com.sjl.blelibrary.listener.OnBLibConnectListener;
 import com.sjl.blelibrary.listener.OnBLibReceiveDataListener;
 import com.sjl.blelibrary.listener.OnBLibWriteDataListener;
 import com.sjl.blelibrary.listener.OnBLibWriteDescriptorListener;
+import com.sjl.blelibrary.util.BLibByteUtil;
 import com.sjl.blelibrary.util.BLibLogUtil;
 
 /**
@@ -94,7 +95,7 @@ public class BLibGattCallback extends BluetoothGattCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 //            super.onCharacteristicChanged(gatt, characteristic);
-        BLibLogUtil.d(TAG, "onCharacteristicChanged receiverData");
+        BLibLogUtil.d(TAG, "onCharacteristicChanged receiverData："+ BLibByteUtil.bytesToHexString(characteristic.getValue()));
 
         if (onBLEReceiveDataListener != null) {
             onBLEReceiveDataListener.onReceiveData(characteristic.getValue());

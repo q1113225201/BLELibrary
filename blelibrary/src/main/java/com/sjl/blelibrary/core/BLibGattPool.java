@@ -1,7 +1,5 @@
 package com.sjl.blelibrary.core;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.os.Handler;
 
@@ -103,16 +101,12 @@ public class BLibGattPool {
      */
     public synchronized void setBluetoothGatt(String mac, BluetoothGatt bluetoothGatt, BLibGattCallback bleGattCallback) {
         BluetoothGattItem bluetoothGattItem = gattMap.get(mac);
-        if (bluetoothGattItem == null) {
+        if(bluetoothGattItem==null){
             bluetoothGattItem = new BluetoothGattItem();
         }
         bluetoothGattItem.time = System.currentTimeMillis();
-        if (bluetoothGatt != null) {
-            bluetoothGattItem.bluetoothGatt = bluetoothGatt;
-        }
-        if (bleGattCallback != null) {
-            bluetoothGattItem.bleGattCallback = bleGattCallback;
-        }
+        bluetoothGattItem.bluetoothGatt = bluetoothGatt;
+        bluetoothGattItem.bleGattCallback = bleGattCallback;
         gattMap.put(mac, bluetoothGattItem);
     }
 
@@ -142,19 +136,12 @@ public class BLibGattPool {
 
     /**
      * 断开Gatt连接
+     *
+     * @param mac
      */
     public synchronized void disconnectGatt(String mac) {
+        BLibLogUtil.d(TAG, "disconnectGatt:" + mac);
         BluetoothGatt bluetoothGatt = getBluetoothGatt(mac);
-        BLibLogUtil.d(TAG, "disconnectGatt:" + mac + "," + (bluetoothGatt != null));
-        removeBluetoothGatt(mac);
-        removeDevice(mac);
-        disconnectGatt(bluetoothGatt);
-    }
-
-    /**
-     * 断开Gatt连接
-     */
-    public synchronized void disconnectGatt(BluetoothGatt bluetoothGatt) {
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();
         }
@@ -162,30 +149,9 @@ public class BLibGattPool {
             clearCacheDevice(bluetoothGatt);
         }
         if (bluetoothGatt != null) {
-            removeBluetoothGatt(bluetoothGatt.getDevice().getAddress());
-            removeDevice(bluetoothGatt.getDevice().getAddress());
             bluetoothGatt.close();
         }
-    }
-
-    /**
-     * 删除已配对设备
-     */
-    private void removeDevice(String mac) {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-            for (BluetoothDevice device : bluetoothAdapter.getBondedDevices()) {
-                if (device.getAddress().equalsIgnoreCase(mac)) {
-                    try {
-                        Method m = device.getClass()
-                                .getMethod("removeBond", (Class[]) null);
-                        m.invoke(device, (Object[]) null);
-                    } catch (Exception e) {
-                        BLibLogUtil.e(TAG, e.getMessage());
-                    }
-                }
-            }
-        }
+        removeBluetoothGatt(mac);
     }
 
     /**

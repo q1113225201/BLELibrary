@@ -102,7 +102,6 @@ public class BLibWriteData {
                     sendLength = sendLength > MAX_BYTES ? MAX_BYTES : sendLength;
                     byte[] sendValue = BLibByteUtil.subBytes(data, currentPosition * MAX_BYTES, sendLength);
                     BLibLogUtil.d(TAG, String.format("position=%d,%s", currentPosition, BLibByteUtil.bytesToHexString(sendValue)));
-                    bluetoothGattCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                     if (!bluetoothGattCharacteristic.setValue(sendValue)) {
                         BLibLogUtil.d(TAG, "writeOneSet setValue failure");
                         if (onBLEWriteDataListener != null) {

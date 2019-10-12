@@ -146,6 +146,7 @@ public class BLibManager {
      */
     public void startScan(int timeout, BLibScanner.OnBLEScanListener onBLEScanListener) {
         if (!openBluetooth()) {
+            onBLEScanListener.onScanFailed(BLibCode.ER_DISABLE);
             return;
         }
         if (bleScanner == null) {
@@ -184,6 +185,7 @@ public class BLibManager {
      */
     public void startAdvertising(AdvertiseSettings settings, AdvertiseData advertiseData, AdvertiseData scanResponse, BLibAdvertiser.OnBLEAdvertisingListener onBLEAdvertisingListener) {
         if (!openBluetooth()) {
+            onBLEAdvertisingListener.onStartFailure(BLibCode.ER_DISABLE);
             return;
         }
         if (bLibAdvertiser == null) {
@@ -202,6 +204,9 @@ public class BLibManager {
         }
     }
 
+    private static final int MAX_CONNECT = 3;
+    private int connectCnt = -1;
+
     /**
      * 连接设备
      *
@@ -209,8 +214,9 @@ public class BLibManager {
      * @param onBLEConnectListener
      */
     public void connect(final String mac, final OnBLibConnectListener onBLEConnectListener) {
+        BLibLogUtil.i(TAG,"connect");
         if (!openBluetooth()) {
-            onBLEConnectListener.onConnectFailure(null,BLibCode.ER_DISABLE);
+            onBLEConnectListener.onConnectFailure(null, BLibCode.ER_DISABLE);
             return;
         }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
@@ -220,13 +226,21 @@ public class BLibManager {
         bleGattCallback.setOnBLEConnectListener(new OnBLibConnectListener() {
             @Override
             public void onConnectSuccess(BluetoothGatt gatt, int status, int newState) {
+                connectCnt = -1;
                 onBLEConnectListener.onConnectSuccess(gatt, status, newState);
             }
 
             @Override
             public void onConnectFailure(BluetoothGatt gatt, int code) {
+                BLibLogUtil.e(TAG, "onConnectFailure:"+connectCnt);
+                if (connectCnt != -1 && connectCnt < MAX_CONNECT) {
+                    connectCnt++;
+                    disconnectGatt(mac);
+                    connect(mac, onBLEConnectListener);
+                    return;
+                }
+                connectCnt = -1;
                 if (gatt != null && gatt.getDevice().getAddress().toUpperCase().equals(mac.toUpperCase())) {
-                    BLibLogUtil.e(TAG, "onConnectFailure");
                     onBLEConnectListener.onConnectFailure(gatt, code);
                 }
 //                bLibGattPool.removeBluetoothGatt(mac);
@@ -245,6 +259,7 @@ public class BLibManager {
         if (bluetoothGatt == null) {
             onBLEConnectListener.onConnectFailure(null, BLibCode.ER_CONNECTED);
         }
+        connectCnt = connectCnt == -1 ? 0 : connectCnt;
         bLibGattPool.setBluetoothGatt(mac, bluetoothGatt, bleGattCallback);
     }
 
@@ -259,6 +274,7 @@ public class BLibManager {
      */
     public void writeDescriptor(String mac, String uuidDescriptorService, String uuidDescriptorCharacteristic, String uuidDescriptor, OnBLibWriteDescriptorListener onBLEWriteDescriptorListener) {
         if (!openBluetooth()) {
+            onBLEWriteDescriptorListener.onWriteDescriptorFailure(BLibCode.ER_DISABLE);
             return;
         }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
@@ -288,6 +304,7 @@ public class BLibManager {
      */
     public void writeData(String mac, String uuidWriteService, String uuidWriteCharacteristics, byte[] data, OnBLibWriteDataListener onBLEWriteDataListener, OnBLibReceiveDataListener onBLEReceiveDataListener) {
         if (!openBluetooth()) {
+            onBLEWriteDataListener.onWriteDataFailure(BLibCode.ER_WRITE_DESC);
             return;
         }
         BLibGattCallback bleGattCallback = bLibGattPool.getBluetoothGattCallback(mac);
